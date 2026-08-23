@@ -91,6 +91,21 @@ $currentAdminScript = basename($_SERVER['SCRIPT_NAME'] ?? '');
         </nav>
     </div>
 
+    <?php
+    // Resolve Authoritative Admin Avatar with Cache-Buster
+    $adminSidebarAvatarUrl = null;
+    if (!empty($adminUser['avatar'])) {
+        if (file_exists(ROOT_PATH . '/uploads/' . $adminUser['avatar'])) {
+            $adminSidebarAvatarUrl = asset('uploads/' . $adminUser['avatar']) . '?v=' . filemtime(ROOT_PATH . '/uploads/' . $adminUser['avatar']);
+        } elseif (file_exists(ROOT_PATH . '/' . $adminUser['avatar'])) {
+            $adminSidebarAvatarUrl = asset($adminUser['avatar']) . '?v=' . filemtime(ROOT_PATH . '/' . $adminUser['avatar']);
+        }
+    }
+    if (!$adminSidebarAvatarUrl && file_exists(ROOT_PATH . '/assets/images/avatars/admin.jpg')) {
+        $adminSidebarAvatarUrl = asset('assets/images/avatars/admin.jpg') . '?v=' . filemtime(ROOT_PATH . '/assets/images/avatars/admin.jpg');
+    }
+    ?>
+
     <!-- Bottom User Info & Links -->
     <div class="p-4 border-t border-slate-800/80 space-y-3 bg-slate-950/50">
         <a href="<?= base_url('index.php') ?>" target="_blank" class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold text-teal-400 hover:bg-slate-900 transition">
@@ -100,10 +115,16 @@ $currentAdminScript = basename($_SERVER['SCRIPT_NAME'] ?? '');
 
         <div class="flex items-center justify-between pt-2 border-t border-slate-800 px-1">
             <div class="flex items-center gap-2.5">
-                <img src="<?= asset('assets/images/avatars/admin.jpg') ?>" alt="Admin" class="w-8 h-8 rounded-lg object-cover ring-1 ring-teal-500/30 shadow" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                <div class="w-8 h-8 rounded-lg bg-slate-800 text-teal-400 font-bold items-center justify-center text-xs" style="display:none;">
-                    <?= strtoupper(substr($adminUser['name'] ?? 'A', 0, 1)) ?>
-                </div>
+                <?php if ($adminSidebarAvatarUrl): ?>
+                    <img src="<?= $adminSidebarAvatarUrl ?>" alt="<?= e($adminUser['name'] ?? 'Admin') ?>" class="w-8 h-8 rounded-lg object-cover ring-1 ring-teal-500/30 shadow" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="w-8 h-8 rounded-lg bg-slate-800 text-teal-400 font-bold items-center justify-center text-xs" style="display:none;">
+                        <?= strtoupper(substr($adminUser['name'] ?? 'A', 0, 1)) ?>
+                    </div>
+                <?php else: ?>
+                    <div class="w-8 h-8 rounded-lg bg-slate-800 text-teal-400 font-bold flex items-center justify-center text-xs">
+                        <?= strtoupper(substr($adminUser['name'] ?? 'A', 0, 1)) ?>
+                    </div>
+                <?php endif; ?>
                 <div class="truncate max-w-[120px]">
                     <span class="text-xs font-bold text-slate-200 block truncate"><?= e($adminUser['name'] ?? 'Administrator') ?></span>
                     <span class="text-[10px] text-slate-500 block truncate"><?= e($adminUser['email'] ?? '') ?></span>

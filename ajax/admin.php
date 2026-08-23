@@ -216,7 +216,20 @@ switch ($action) {
         $id = (int)($_POST['id'] ?? 0);
         $status = (int)($_POST['is_read'] ?? 1);
         Database::execute("UPDATE contact_messages SET is_read = ? WHERE id = ?", [$status, $id]);
-        json_response(true, 'Message status updated.');
+        $unreadCount = (int)(Database::fetch("SELECT COUNT(*) as cnt FROM contact_messages WHERE is_read = 0")['cnt'] ?? 0);
+        json_response(true, 'Message status updated.', ['unread_count' => $unreadCount]);
+        break;
+
+    case 'mark_all_messages_read':
+        Database::execute("UPDATE contact_messages SET is_read = 1 WHERE is_read = 0");
+        json_response(true, 'All inquiries marked as read.', ['unread_count' => 0]);
+        break;
+
+    case 'mark_booking_viewed':
+        $id = (int)($_POST['id'] ?? 0);
+        Database::execute("UPDATE bookings SET is_viewed = 1 WHERE id = ?", [$id]);
+        $unviewedCount = (int)(Database::fetch("SELECT COUNT(*) as cnt FROM bookings WHERE is_viewed = 0")['cnt'] ?? 0);
+        json_response(true, 'Booking marked as viewed.', ['unviewed_count' => $unviewedCount]);
         break;
 
     default:

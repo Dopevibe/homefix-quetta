@@ -513,15 +513,38 @@ document.addEventListener('DOMContentLoaded', () => {
                 }).then(r => r.json());
 
                 if (res.success) {
-                    showToast('success', 'Success', res.message || 'Profile updated successfully.');
+                    showToast('success', 'Profile Updated', res.message || 'Profile updated successfully.');
                     const updatedName = document.getElementById('adminNameInput').value;
                     const nameDisplay = document.getElementById('profileNameDisplay');
                     if (nameDisplay) nameDisplay.textContent = updatedName;
 
+                    // Synchronize sidebar name display
+                    const sidebarNameEl = document.querySelector('#adminSidebar .p-4 span.font-bold');
+                    if (sidebarNameEl) sidebarNameEl.textContent = updatedName;
+
                     if (res.data && res.data.avatar_url) {
-                        if (avatarPreviewImg) avatarPreviewImg.src = res.data.avatar_url;
-                        const sidebarImg = document.querySelector('#adminSidebar img');
-                        if (sidebarImg) sidebarImg.src = res.data.avatar_url;
+                        if (avatarPreviewImg) {
+                            avatarPreviewImg.src = res.data.avatar_url;
+                            avatarPreviewImg.style.display = 'block';
+                            avatarPreviewImg.classList.remove('hidden');
+                        }
+                        if (avatarFallbackBadge) {
+                            avatarFallbackBadge.style.display = 'none';
+                        }
+                        const sidebarAvatarContainer = document.querySelector('#adminSidebar .p-4 .flex.items-center.gap-2\\.5');
+                        if (sidebarAvatarContainer) {
+                            let sImg = sidebarAvatarContainer.querySelector('img');
+                            if (!sImg) {
+                                sImg = document.createElement('img');
+                                sImg.className = 'w-8 h-8 rounded-lg object-cover ring-1 ring-teal-500/30 shadow';
+                                sImg.alt = updatedName;
+                                sidebarAvatarContainer.prepend(sImg);
+                                const badge = sidebarAvatarContainer.querySelector('div.bg-slate-800');
+                                if (badge) badge.style.display = 'none';
+                            }
+                            sImg.src = res.data.avatar_url;
+                            sImg.style.display = 'block';
+                        }
                     }
                 } else {
                     showToast('error', 'Error', res.message || 'Failed to update profile.');

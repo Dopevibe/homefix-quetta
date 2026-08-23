@@ -6,6 +6,16 @@ $adminPageTitle = 'Manage Bookings | HomeFix Quetta Admin';
 require_once __DIR__ . '/../includes/admin_header.php';
 require_once __DIR__ . '/../includes/admin_sidebar.php';
 
+// Automatically Mark All Unviewed Bookings as Viewed
+try {
+    Database::execute("UPDATE bookings SET is_viewed = 1 WHERE is_viewed = 0");
+} catch (Exception $e) {
+    try {
+        Database::execute("ALTER TABLE bookings ADD COLUMN is_viewed TINYINT(1) DEFAULT 0");
+        Database::execute("UPDATE bookings SET is_viewed = 1 WHERE is_viewed = 0");
+    } catch (Exception $ex) {}
+}
+
 // Filter inputs
 $statusFilter = trim($_GET['status'] ?? 'all');
 $categoryFilter = (int)($_GET['category'] ?? 0);

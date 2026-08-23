@@ -7,12 +7,43 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/admin_auth.php';
 require_admin();
 
+// Single Authoritative Source of Truth for Admin Profile
 $adminUser = current_admin();
+if (!empty($_SESSION['user_id'])) {
+    try {
+        $dbAdmin = Database::fetch("SELECT id, name, email, phone, role, status, avatar, created_at, updated_at FROM users WHERE id = ?", [$_SESSION['user_id']]);
+        if ($dbAdmin) {
+            $adminUser = $dbAdmin;
+            $_SESSION['user_name'] = $dbAdmin['name'];
+            $_SESSION['user_email'] = $dbAdmin['email'];
+            $_SESSION['user_phone'] = $dbAdmin['phone'];
+            $_SESSION['user_role'] = $dbAdmin['role'];
+            $_SESSION['user_avatar'] = $dbAdmin['avatar'];
+        }
+    } catch (Exception $e) {
+        error_log('Admin user sync error: ' . $e->getMessage());
+    }
+}
+
 $adminPageTitle = $adminPageTitle ?? 'Admin Dashboard | HomeFix Quetta';
 
-// Fetch quick badges for sidebar
-$pendingBookingsCount = Database::fetch("SELECT COUNT(*) as cnt FROM bookings WHERE status IN ('pending', 'confirmed')")['cnt'] ?? 0;
-$unreadMessagesCount = Database::fetch("SELECT COUNT(*) as cnt FROM contact_messages WHERE is_read = 0")['cnt'] ?? 0;
+// Dynamic Real-time Badge Counters
+try {
+    $pendingBookingsCount = (int)(Database::fetch("SELECT COUNT(*) as cnt FROM bookings WHERE is_viewed = 0")['cnt'] ?? 0);
+} catch (Exception $e) {
+    try {
+        Database::execute("ALTER TABLE bookings ADD COLUMN is_viewed TINYINT(1) DEFAULT 0");
+        $pendingBookingsCount = (int)(Database::fetch("SELECT COUNT(*) as cnt FROM bookings WHERE is_viewed = 0")['cnt'] ?? 0);
+    } catch (Exception $ex) {
+        $pendingBookingsCount = (int)(Database::fetch("SELECT COUNT(*) as cnt FROM bookings WHERE status = 'pending'")['cnt'] ?? 0);
+    }
+}
+
+try {
+    $unreadMessagesCount = (int)(Database::fetch("SELECT COUNT(*) as cnt FROM contact_messages WHERE is_read = 0")['cnt'] ?? 0);
+} catch (Exception $e) {
+    $unreadMessagesCount = 0;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">

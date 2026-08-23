@@ -106,6 +106,7 @@ CREATE TABLE `bookings` (
   `problem_description` TEXT NOT NULL,
   `image_attachment` VARCHAR(255) DEFAULT NULL,
   `status` ENUM('pending', 'confirmed', 'assigned', 'in_progress', 'completed', 'cancelled') DEFAULT 'pending',
+  `is_viewed` TINYINT(1) NOT NULL DEFAULT 0,
   `notes` TEXT DEFAULT NULL,
   `total_amount` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
