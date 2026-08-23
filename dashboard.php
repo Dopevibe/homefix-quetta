@@ -122,157 +122,297 @@ foreach ($bookings as $b) {
             </div>
         </div>
 
-        <!-- Bookings List -->
-        <div id="bookings" class="bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden">
-            <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center">
-                <h3 class="font-heading font-bold text-lg text-slate-900">Your Booking History</h3>
-                <span class="text-xs text-slate-500 font-semibold"><?= count($bookings) ?> Records</span>
-            </div>
-
-            <?php if (!empty($bookings)): ?>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs sm:text-sm">
-                        <thead class="bg-slate-50 text-slate-500 uppercase text-[11px] font-bold border-b border-slate-100">
-                            <tr>
-                                <th class="px-6 py-4">Reference / Date</th>
-                                <th class="px-6 py-4">Service & Quetta Area</th>
-                                <th class="px-6 py-4">Amount</th>
-                                <th class="px-6 py-4">Status</th>
-                                <th class="px-6 py-4">Technician</th>
-                                <th class="px-6 py-4 text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-100 text-slate-700">
-                            <?php foreach ($bookings as $b): ?>
-                                <tr class="hover:bg-slate-50/80 transition">
-                                    <td class="px-6 py-4 font-medium">
-                                        <a href="<?= base_url('tracking.php?ref=' . $b['booking_reference']) ?>" class="font-mono font-bold text-teal-700 hover:underline block">
-                                            <?= e($b['booking_reference']) ?>
-                                        </a>
-                                        <span class="text-xs text-slate-400"><?= format_date($b['preferred_date']) ?> • <?= e($b['preferred_time']) ?></span>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <span class="font-bold text-slate-900 block"><?= e($b['service_name']) ?></span>
-                                        <span class="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
-                                            <i data-lucide="map-pin" class="w-3 h-3 text-teal-600"></i>
-                                            <?= e($b['area']) ?>
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 font-bold font-mono text-teal-900">
-                                        <?= format_price($b['total_amount']) ?>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <?= get_status_badge($b['status']) ?>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <?php if (!empty($b['technician_name'])): ?>
-                                            <span class="font-semibold text-slate-800 block"><?= e($b['technician_name']) ?></span>
-                                            <a href="tel:<?= e($b['technician_phone']) ?>" class="text-[11px] text-teal-700 hover:underline"><?= e($b['technician_phone']) ?></a>
-                                        <?php else: ?>
-                                            <span class="text-slate-400 italic text-xs">Assigning Pro...</span>
-                                        <?php endif; ?>
-                                    </td>
-                                    <td class="px-6 py-4 text-right space-x-2">
-                                        <a href="<?= base_url('tracking.php?ref=' . $b['booking_reference']) ?>" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-teal-50 text-teal-700 font-semibold text-xs hover:bg-teal-100 transition">
-                                            <i data-lucide="map-pin" class="w-3.5 h-3.5"></i> Track
-                                        </a>
-
-                                        <?php if ($b['status'] === 'completed'): ?>
-                                            <?php if (empty($b['review_id'])): ?>
-                                                <button type="button" 
-                                                        class="leave-review-btn inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-amber-50 text-amber-700 font-semibold text-xs hover:bg-amber-100 transition"
-                                                        data-booking-id="<?= $b['id'] ?>"
-                                                        data-service-id="<?= $b['service_id'] ?>"
-                                                        data-service-name="<?= e($b['service_name']) ?>">
-                                                    <i data-lucide="star" class="w-3.5 h-3.5"></i> Rate Job
-                                                </button>
-                                            <?php else: ?>
-                                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-semibold">
-                                                    <i data-lucide="check" class="w-3 h-3"></i> Reviewed (<?= $b['review_rating'] ?>★)
-                                                </span>
-                                            <?php endif; ?>
-                                        <?php elseif (in_array($b['status'], ['pending', 'confirmed'])): ?>
-                                            <button type="button" 
-                                                    class="cancel-booking-btn inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-rose-50 text-rose-700 font-semibold text-xs hover:bg-rose-100 transition"
-                                                    data-id="<?= $b['id'] ?>"
-                                                    data-ref="<?= $b['booking_reference'] ?>">
-                                                Cancel
-                                            </button>
-                                        <?php endif; ?>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-            <?php else: ?>
-                <div class="p-12 text-center space-y-3">
-                    <div class="w-14 h-14 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto">
-                        <i data-lucide="calendar" class="w-7 h-7"></i>
-                    </div>
-                    <h4 class="font-bold text-slate-800 text-base">No Bookings Yet</h4>
-                    <p class="text-xs text-slate-500 max-w-sm mx-auto">You haven't requested any home repair services yet. When you do, they'll appear here with live tracking.</p>
-                    <a href="<?= base_url('booking.php') ?>" class="btn-primary inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold mt-2">
-                        Schedule Your First Service
-                    </a>
-                </div>
-            <?php endif; ?>
+        <!-- Navigation Tabs for Mobile & Desktop -->
+        <div class="flex items-center gap-2 border-b border-slate-200 pb-4 overflow-x-auto">
+            <button type="button" class="dash-tab-btn active px-4 sm:px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-2 transition bg-teal-600 text-white shadow-md shadow-teal-600/20 whitespace-nowrap" data-target="#tabBookings">
+                <i data-lucide="calendar" class="w-4 h-4"></i>
+                <span>My Bookings (<?= count($bookings) ?>)</span>
+            </button>
+            <button type="button" class="dash-tab-btn px-4 sm:px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-2 transition bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 whitespace-nowrap" data-target="#tabProfile">
+                <i data-lucide="user" class="w-4 h-4"></i>
+                <span>Personal Information</span>
+            </button>
+            <button type="button" class="dash-tab-btn px-4 sm:px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-2 transition bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 whitespace-nowrap" data-target="#tabSecurity">
+                <i data-lucide="shield-check" class="w-4 h-4"></i>
+                <span>Security & Password</span>
+            </button>
         </div>
 
-        <!-- Profile Update & Security Card -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <!-- Update Profile -->
-            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-4">
-                <h3 class="font-heading font-bold text-lg text-slate-900">Personal Information</h3>
+        <!-- TAB 1: BOOKINGS -->
+        <div id="tabBookings" class="dash-tab-content space-y-6">
+            
+            <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden">
+                <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                    <div>
+                        <h3 class="font-heading font-bold text-lg text-slate-900">Your Booking History</h3>
+                        <p class="text-xs text-slate-500">Track current jobs or view completed repair records.</p>
+                    </div>
+                    <span class="text-xs font-mono font-bold text-teal-700 bg-teal-50 px-3 py-1.5 rounded-xl border border-teal-100">
+                        <?= count($bookings) ?> Orders
+                    </span>
+                </div>
+
+                <?php if (!empty($bookings)): ?>
+                    <!-- Desktop Table View (Hidden on mobile) -->
+                    <div class="hidden md:block overflow-x-auto">
+                        <table class="w-full text-left text-xs sm:text-sm">
+                            <thead class="bg-slate-50 text-slate-500 uppercase text-[11px] font-bold border-b border-slate-100">
+                                <tr>
+                                    <th class="px-6 py-4">Reference / Date</th>
+                                    <th class="px-6 py-4">Service & Quetta Area</th>
+                                    <th class="px-6 py-4">Amount</th>
+                                    <th class="px-6 py-4">Status</th>
+                                    <th class="px-6 py-4">Technician</th>
+                                    <th class="px-6 py-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-slate-700">
+                                <?php foreach ($bookings as $b): ?>
+                                    <tr class="hover:bg-slate-50/80 transition">
+                                        <td class="px-6 py-4 font-medium">
+                                            <a href="<?= base_url('tracking.php?ref=' . $b['booking_reference']) ?>" class="font-mono font-bold text-teal-700 hover:underline block">
+                                                <?= e($b['booking_reference']) ?>
+                                            </a>
+                                            <span class="text-xs text-slate-400"><?= format_date($b['preferred_date']) ?> • <?= e($b['preferred_time']) ?></span>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <span class="font-bold text-slate-900 block"><?= e($b['service_name']) ?></span>
+                                            <span class="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
+                                                <i data-lucide="map-pin" class="w-3 h-3 text-teal-600"></i>
+                                                <?= e($b['area']) ?>
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 font-bold font-mono text-teal-900">
+                                            <?= format_price($b['total_amount']) ?>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <?= get_status_badge($b['status']) ?>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <?php if (!empty($b['technician_name'])): ?>
+                                                <span class="font-semibold text-slate-800 block"><?= e($b['technician_name']) ?></span>
+                                                <a href="tel:<?= e($b['technician_phone']) ?>" class="text-[11px] text-teal-700 hover:underline"><?= e($b['technician_phone']) ?></a>
+                                            <?php else: ?>
+                                                <span class="text-slate-400 italic text-xs">Assigning Pro...</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td class="px-6 py-4 text-right space-x-2">
+                                            <a href="<?= base_url('tracking.php?ref=' . $b['booking_reference']) ?>" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-teal-50 text-teal-700 font-semibold text-xs hover:bg-teal-100 transition">
+                                                <i data-lucide="map-pin" class="w-3.5 h-3.5"></i> Track
+                                            </a>
+
+                                            <?php if ($b['status'] === 'completed'): ?>
+                                                <?php if (empty($b['review_id'])): ?>
+                                                    <button type="button" 
+                                                            class="leave-review-btn inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-amber-50 text-amber-700 font-semibold text-xs hover:bg-amber-100 transition"
+                                                            data-booking-id="<?= $b['id'] ?>"
+                                                            data-service-id="<?= $b['service_id'] ?>"
+                                                            data-service-name="<?= e($b['service_name']) ?>">
+                                                        <i data-lucide="star" class="w-3.5 h-3.5"></i> Rate Job
+                                                    </button>
+                                                <?php else: ?>
+                                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-semibold">
+                                                        <i data-lucide="check" class="w-3 h-3"></i> Reviewed (<?= $b['review_rating'] ?>★)
+                                                    </span>
+                                                <?php endif; ?>
+                                            <?php elseif (in_array($b['status'], ['pending', 'confirmed'])): ?>
+                                                <button type="button" 
+                                                        class="cancel-booking-btn inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-rose-50 text-rose-700 font-semibold text-xs hover:bg-rose-100 transition"
+                                                        data-id="<?= $b['id'] ?>"
+                                                        data-ref="<?= $b['booking_reference'] ?>">
+                                                    Cancel
+                                                </button>
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Mobile Booking Cards View (100% responsive, zero horizontal scrolling) -->
+                    <div class="divide-y divide-slate-100 md:hidden">
+                        <?php foreach ($bookings as $b): ?>
+                            <div class="p-4 sm:p-5 space-y-3.5 bg-white">
+                                <!-- Top Bar: Ref & Status -->
+                                <div class="flex items-start justify-between gap-2">
+                                    <div>
+                                        <a href="<?= base_url('tracking.php?ref=' . $b['booking_reference']) ?>" class="font-mono font-bold text-teal-700 text-xs block hover:underline">
+                                            <?= e($b['booking_reference']) ?>
+                                        </a>
+                                        <h4 class="text-sm font-extrabold font-heading text-slate-900 leading-snug mt-0.5"><?= e($b['service_name']) ?></h4>
+                                    </div>
+                                    <div class="shrink-0">
+                                        <?= get_status_badge($b['status']) ?>
+                                    </div>
+                                </div>
+
+                                <!-- Metadata Box -->
+                                <div class="bg-slate-50 p-3 rounded-2xl border border-slate-100 space-y-1.5 text-xs text-slate-600">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-slate-400 font-medium">Timing:</span>
+                                        <span class="font-semibold text-slate-800"><?= format_date($b['preferred_date']) ?> • <?= e($b['preferred_time']) ?></span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-slate-400 font-medium">Area:</span>
+                                        <span class="font-semibold text-teal-700 flex items-center gap-1">
+                                            <i data-lucide="map-pin" class="w-3 h-3"></i>
+                                            <?= e($b['area']) ?>
+                                        </span>
+                                    </div>
+                                    <div class="flex justify-between items-center pt-1 border-t border-slate-200/60">
+                                        <span class="text-slate-400 font-medium">Total Amount:</span>
+                                        <span class="font-mono font-extrabold text-sm text-teal-800"><?= format_price($b['total_amount']) ?></span>
+                                    </div>
+                                    <?php if (!empty($b['technician_name'])): ?>
+                                        <div class="flex justify-between items-center pt-1 border-t border-slate-200/60">
+                                            <span class="text-slate-400 font-medium">Technician:</span>
+                                            <span class="font-bold text-slate-800"><?= e($b['technician_name']) ?></span>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+
+                                <!-- Action Buttons -->
+                                <div class="flex items-center gap-2 pt-1">
+                                    <a href="<?= base_url('tracking.php?ref=' . $b['booking_reference']) ?>" class="flex-1 btn-primary py-2 rounded-xl text-xs font-bold text-center inline-flex items-center justify-center gap-1.5 shadow-sm">
+                                        <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>
+                                        <span>Live Tracking</span>
+                                    </a>
+
+                                    <?php if ($b['status'] === 'completed'): ?>
+                                        <?php if (empty($b['review_id'])): ?>
+                                            <button type="button" 
+                                                    class="leave-review-btn px-4 py-2 rounded-xl bg-amber-500 text-white font-bold text-xs hover:bg-amber-600 transition inline-flex items-center gap-1 shadow-sm"
+                                                    data-booking-id="<?= $b['id'] ?>"
+                                                    data-service-id="<?= $b['service_id'] ?>"
+                                                    data-service-name="<?= e($b['service_name']) ?>">
+                                                <i data-lucide="star" class="w-3.5 h-3.5 fill-white"></i> Rate
+                                            </button>
+                                        <?php else: ?>
+                                            <span class="px-3 py-2 rounded-xl bg-emerald-50 text-emerald-700 text-xs font-bold border border-emerald-200">
+                                                <?= $b['review_rating'] ?>★ Done
+                                            </span>
+                                        <?php endif; ?>
+                                    <?php elseif (in_array($b['status'], ['pending', 'confirmed'])): ?>
+                                        <button type="button" 
+                                                class="cancel-booking-btn px-4 py-2 rounded-xl bg-rose-50 text-rose-700 font-bold text-xs border border-rose-200 hover:bg-rose-100 transition"
+                                                data-id="<?= $b['id'] ?>"
+                                                data-ref="<?= $b['booking_reference'] ?>">
+                                            Cancel
+                                        </button>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php else: ?>
+                    <div class="p-12 text-center space-y-3">
+                        <div class="w-14 h-14 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto">
+                            <i data-lucide="calendar" class="w-7 h-7"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-800 text-base">No Bookings Yet</h4>
+                        <p class="text-xs text-slate-500 max-w-sm mx-auto">You haven't requested any home repair services yet. When you do, they'll appear here with live tracking.</p>
+                        <a href="<?= base_url('booking.php') ?>" class="btn-primary inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold mt-2">
+                            Schedule Your First Service
+                        </a>
+                    </div>
+                <?php endif; ?>
+            </div>
+
+        </div>
+
+        <!-- TAB 2: PERSONAL INFORMATION -->
+        <div id="tabProfile" class="dash-tab-content hidden space-y-6">
+            <div class="max-w-2xl bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-5">
+                <div class="flex items-center gap-3 pb-4 border-b border-slate-100">
+                    <div class="w-10 h-10 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center font-bold">
+                        <i data-lucide="user" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-heading font-bold text-lg text-slate-900">Personal Information</h3>
+                        <p class="text-xs text-slate-500">Update your contact details and home address in Quetta.</p>
+                    </div>
+                </div>
+
                 <form id="profileUpdateForm" class="space-y-4">
                     <input type="hidden" name="action" value="update_profile">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Full Name</label>
-                        <input type="text" name="name" value="<?= e($user['name']) ?>" required class="form-input text-sm">
+                    
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Full Name</label>
+                        <input type="text" name="name" value="<?= e($user['name']) ?>" required class="form-input text-sm w-full">
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Mobile Phone</label>
-                        <input type="tel" name="phone" value="<?= e($user['phone']) ?>" required class="form-input text-sm">
+
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Primary Email Address</label>
+                        <input type="email" value="<?= e($user['email']) ?>" disabled class="form-input text-sm w-full bg-slate-100 text-slate-500 cursor-not-allowed">
+                        <span class="text-[11px] text-slate-400 block">Your login email identifier cannot be changed directly.</span>
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Quetta Neighborhood</label>
-                        <select name="area" class="form-input text-sm">
+
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Mobile Phone</label>
+                        <input type="tel" name="phone" value="<?= e($user['phone']) ?>" required class="form-input text-sm w-full font-mono">
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Quetta Neighborhood</label>
+                        <select name="area" class="form-input text-sm w-full">
                             <option value="">-- Select Neighborhood --</option>
                             <?php foreach (QUETTA_AREAS as $area): ?>
                                 <option value="<?= $area ?>" <?= ($user['area'] === $area) ? 'selected' : '' ?>><?= $area ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Saved Address</label>
-                        <input type="text" name="address" value="<?= e($user['address'] ?? '') ?>" placeholder="Street / House details in Quetta" class="form-input text-sm">
+
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Saved Address / Landmark</label>
+                        <input type="text" name="address" value="<?= e($user['address'] ?? '') ?>" placeholder="House #, Street #, Sector, Quetta" class="form-input text-sm w-full">
                     </div>
-                    <button type="submit" id="saveProfileBtn" class="btn-primary px-6 py-2.5 rounded-xl text-xs font-bold">
-                        Save Profile Changes
-                    </button>
+
+                    <div class="pt-2">
+                        <button type="submit" id="saveProfileBtn" class="btn-primary w-full sm:w-auto px-6 py-3 rounded-xl text-xs font-bold shadow-md">
+                            Save Profile Changes
+                        </button>
+                    </div>
                 </form>
             </div>
+        </div>
 
-            <!-- Change Password -->
-            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-4">
-                <h3 class="font-heading font-bold text-lg text-slate-900">Security & Password</h3>
+        <!-- TAB 3: SECURITY & PASSWORD -->
+        <div id="tabSecurity" class="dash-tab-content hidden space-y-6">
+            <div class="max-w-2xl bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-5">
+                <div class="flex items-center gap-3 pb-4 border-b border-slate-100">
+                    <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
+                        <i data-lucide="lock" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-heading font-bold text-lg text-slate-900">Security & Password</h3>
+                        <p class="text-xs text-slate-500">Update your account password with encryption.</p>
+                    </div>
+                </div>
+
                 <form id="passwordChangeForm" class="space-y-4">
                     <input type="hidden" name="action" value="change_password">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Current Password</label>
-                        <input type="password" name="current_password" required placeholder="••••••••" class="form-input text-sm">
+                    
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Current Password</label>
+                        <input type="password" name="current_password" required placeholder="••••••••" class="form-input text-sm w-full">
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">New Password</label>
-                        <input type="password" name="new_password" required placeholder="Min. 6 chars" class="form-input text-sm">
+
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">New Password</label>
+                        <input type="password" name="new_password" required placeholder="Minimum 6 characters" class="form-input text-sm w-full">
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Confirm New Password</label>
-                        <input type="password" name="confirm_password" required placeholder="Repeat new password" class="form-input text-sm">
+
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Confirm New Password</label>
+                        <input type="password" name="confirm_password" required placeholder="Repeat new password" class="form-input text-sm w-full">
                     </div>
-                    <button type="submit" id="savePasswordBtn" class="px-6 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition">
-                        Update Password
-                    </button>
+
+                    <div class="pt-2">
+                        <button type="submit" id="savePasswordBtn" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition shadow-md">
+                            Update Password
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -323,6 +463,20 @@ foreach ($bookings as $b) {
 
 <script>
 $(document).ready(function() {
+    // Tab Navigation
+    $('.dash-tab-btn').on('click', function() {
+        const target = $(this).data('target');
+        $('.dash-tab-btn').removeClass('active bg-teal-600 text-white shadow-md shadow-teal-600/20')
+                          .addClass('bg-white text-slate-600 hover:bg-slate-100 border border-slate-200');
+        
+        $(this).addClass('active bg-teal-600 text-white shadow-md shadow-teal-600/20')
+               .removeClass('bg-white text-slate-600 hover:bg-slate-100 border border-slate-200');
+        
+        $('.dash-tab-content').addClass('hidden');
+        $(target).removeClass('hidden');
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+    });
+
     // Review Modal Opening
     $(document).on('click', '.leave-review-btn', function() {
         const bookingId = $(this).data('booking-id');
@@ -417,16 +571,47 @@ $(document).ready(function() {
     // Profile Update AJAX
     $('#profileUpdateForm').on('submit', function(e) {
         e.preventDefault();
+        const form = this;
+        const btn = $('#saveProfileBtn');
+        const origText = btn.html();
+
+        if (typeof HF !== 'undefined' && HF.btnLoading) {
+            HF.btnLoading(btn, 'Saving...');
+        } else {
+            btn.prop('disabled', true).html('Saving...');
+        }
+
         $.ajax({
             url: 'ajax/auth.php',
             type: 'POST',
-            data: $(this).serialize(),
+            data: $(form).serialize(),
             dataType: 'json',
             success: function(res) {
-                if (res.success) {
-                    HF.toast('success', res.message);
+                if (typeof HF !== 'undefined' && HF.btnReset) {
+                    HF.btnReset(btn);
                 } else {
-                    HF.toast('error', res.message);
+                    btn.prop('disabled', false).html(origText);
+                }
+                if (res.success) {
+                    if (typeof HF !== 'undefined') {
+                        HF.toast('success', res.message);
+                    } else {
+                        alert(res.message);
+                    }
+                } else {
+                    if (typeof HF !== 'undefined') {
+                        HF.toast('error', res.message);
+                    } else {
+                        alert(res.message);
+                    }
+                }
+            },
+            error: function() {
+                if (typeof HF !== 'undefined' && HF.btnReset) {
+                    HF.btnReset(btn);
+                    HF.toast('error', 'Connection error. Please try again.');
+                } else {
+                    btn.prop('disabled', false).html(origText);
                 }
             }
         });
@@ -435,17 +620,48 @@ $(document).ready(function() {
     // Password Update AJAX
     $('#passwordChangeForm').on('submit', function(e) {
         e.preventDefault();
+        const form = this;
+        const btn = $('#savePasswordBtn');
+        const origText = btn.html();
+
+        if (typeof HF !== 'undefined' && HF.btnLoading) {
+            HF.btnLoading(btn, 'Updating...');
+        } else {
+            btn.prop('disabled', true).html('Updating...');
+        }
+
         $.ajax({
             url: 'ajax/auth.php',
             type: 'POST',
-            data: $(this).serialize(),
+            data: $(form).serialize(),
             dataType: 'json',
             success: function(res) {
+                if (typeof HF !== 'undefined' && HF.btnReset) {
+                    HF.btnReset(btn);
+                } else {
+                    btn.prop('disabled', false).html(origText);
+                }
                 if (res.success) {
-                    HF.toast('success', res.message);
+                    if (typeof HF !== 'undefined') {
+                        HF.toast('success', res.message);
+                    } else {
+                        alert(res.message);
+                    }
                     $('#passwordChangeForm')[0].reset();
                 } else {
-                    HF.toast('error', res.message);
+                    if (typeof HF !== 'undefined') {
+                        HF.toast('error', res.message);
+                    } else {
+                        alert(res.message);
+                    }
+                }
+            },
+            error: function() {
+                if (typeof HF !== 'undefined' && HF.btnReset) {
+                    HF.btnReset(btn);
+                    HF.toast('error', 'Connection error. Please try again.');
+                } else {
+                    btn.prop('disabled', false).html(origText);
                 }
             }
         });

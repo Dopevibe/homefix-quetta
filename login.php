@@ -29,24 +29,40 @@ if (isset($_SESSION['user_id'])) {
             <p class="text-xs text-slate-500 mt-1">Sign in to your HomeFix Quetta account</p>
         </div>
 
+        <!-- Alert Box for Error / Notice -->
+        <div id="loginAlertBox" class="hidden p-3.5 rounded-2xl text-xs font-semibold bg-rose-50 border border-rose-200 text-rose-700 flex items-center gap-2.5">
+            <i data-lucide="alert-circle" class="w-4 h-4 text-rose-600 shrink-0"></i>
+            <span id="loginAlertMsg">Invalid email or password.</span>
+        </div>
+
         <!-- Login Form -->
         <form id="customerLoginForm" class="space-y-4 hf-form" novalidate>
             <input type="hidden" name="action" value="login">
             
-            <div class="form-group">
-                <label for="loginEmail" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Email Address</label>
-                <input type="email" id="loginEmail" name="email" required placeholder="name@example.com" class="form-input text-sm w-full">
+            <div class="form-group space-y-1.5">
+                <label for="loginEmail" class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Email Address</label>
+                <div class="relative">
+                    <input type="email" id="loginEmail" name="email" required placeholder="name@example.com" class="form-input text-sm w-full">
+                </div>
+                <div id="emailErrorMsg" class="hidden text-xs text-rose-600 font-semibold mt-1 items-center gap-1">
+                    <i data-lucide="alert-circle" class="w-3.5 h-3.5 shrink-0"></i>
+                    <span>Please enter your email address</span>
+                </div>
             </div>
 
-            <div class="form-group">
-                <div class="flex justify-between items-center mb-1.5">
+            <div class="form-group space-y-1.5">
+                <div class="flex justify-between items-center">
                     <label for="loginPassword" class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Password</label>
                 </div>
                 <div class="relative">
                     <input type="password" id="loginPassword" name="password" required placeholder="••••••••" class="form-input text-sm pr-10 w-full">
-                    <button type="button" id="togglePasswordBtn" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors">
+                    <button type="button" id="togglePasswordBtn" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1" aria-label="Toggle password visibility">
                         <i data-lucide="eye" class="w-4 h-4"></i>
                     </button>
+                </div>
+                <div id="passwordErrorMsg" class="hidden text-xs text-rose-600 font-semibold mt-1 items-center gap-1">
+                    <i data-lucide="alert-circle" class="w-3.5 h-3.5 shrink-0"></i>
+                    <span>Please enter your password</span>
                 </div>
             </div>
 
@@ -86,42 +102,98 @@ $(document).ready(function() {
             input.attr('type', 'password');
             icon.replaceWith('<i data-lucide="eye" class="w-4 h-4"></i>');
         }
-        lucide.createIcons();
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
     });
 
-    // Inline Validation
+    function showEmailErr(msg) {
+        $('#loginEmail').addClass('is-invalid border-rose-500 ring-1 ring-rose-500');
+        $('#emailErrorMsg').find('span').text(msg);
+        $('#emailErrorMsg').removeClass('hidden').addClass('flex');
+    }
+
+    function clearEmailErr() {
+        $('#loginEmail').removeClass('is-invalid border-rose-500 ring-1 ring-rose-500');
+        $('#emailErrorMsg').addClass('hidden').removeClass('flex');
+    }
+
+    function showPassErr(msg) {
+        $('#loginPassword').addClass('is-invalid border-rose-500 ring-1 ring-rose-500');
+        $('#passwordErrorMsg').find('span').text(msg);
+        $('#passwordErrorMsg').removeClass('hidden').addClass('flex');
+    }
+
+    function clearPassErr() {
+        $('#loginPassword').removeClass('is-invalid border-rose-500 ring-1 ring-rose-500');
+        $('#passwordErrorMsg').addClass('hidden').removeClass('flex');
+    }
+
+    function showAlert(msg) {
+        $('#loginAlertMsg').text(msg);
+        $('#loginAlertBox').removeClass('hidden').addClass('flex');
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function hideAlert() {
+        $('#loginAlertBox').addClass('hidden').removeClass('flex');
+    }
+
+    // Real-time input clearing
+    $('#loginEmail').on('input', function() {
+        clearEmailErr();
+        hideAlert();
+    });
+
+    $('#loginPassword').on('input', function() {
+        clearPassErr();
+        hideAlert();
+    });
+
+    // Blur Validation
     $('#loginEmail').on('blur', function() {
-        const val = $(this).val();
+        const val = $(this).val().trim();
         if (val && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
-            HF.showFieldError(this, 'Please enter a valid email address');
-        } else {
-            HF.clearFieldError(this);
+            showEmailErr('Please enter a valid email address (e.g. name@example.com)');
         }
     });
 
     $('#loginPassword').on('blur', function() {
-        if ($(this).val().length > 0 && $(this).val().length < 6) {
-            HF.showFieldError(this, 'Password must be at least 6 characters');
-        } else {
-            HF.clearFieldError(this);
+        const val = $(this).val();
+        if (val.length > 0 && val.length < 6) {
+            showPassErr('Password must be at least 6 characters');
         }
     });
 
     // Submit AJAX
     $('#customerLoginForm').on('submit', function(e) {
         e.preventDefault();
+        hideAlert();
         
-        // Simple pre-validation
+        const email = $('#loginEmail').val().trim();
+        const password = $('#loginPassword').val();
         let hasError = false;
-        if (!$('#loginEmail').val()) {
-            HF.showFieldError('#loginEmail', 'Email is required');
+
+        if (!email) {
+            showEmailErr('Please enter your email address');
+            hasError = true;
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            showEmailErr('Please enter a valid email address format');
             hasError = true;
         }
-        if (!$('#loginPassword').val()) {
-            HF.showFieldError('#loginPassword', 'Password is required');
+
+        if (!password) {
+            showPassErr('Please enter your account password');
+            hasError = true;
+        } else if (password.length < 6) {
+            showPassErr('Password must be at least 6 characters');
             hasError = true;
         }
-        if (hasError) return;
+
+        if (hasError) {
+            showAlert('Please fill in both email and password correctly.');
+            return;
+        }
 
         const form = this;
         const btn = $('#loginSubmitBtn');
@@ -130,7 +202,7 @@ $(document).ready(function() {
         if (typeof HF !== 'undefined' && HF.btnLoading) {
             HF.btnLoading(btn, 'Authenticating...');
         } else {
-            btn.prop('disabled', true).html('Authenticating...');
+            btn.prop('disabled', true).html('<i data-lucide="loader" class="w-4 h-4 animate-spin inline-block mr-2"></i> Authenticating...');
         }
 
         $.ajax({
@@ -145,28 +217,35 @@ $(document).ready(function() {
                     } else {
                         btn.html('Success!');
                     }
+                    if (typeof HF !== 'undefined') {
+                        HF.toast('success', res.message);
+                    }
                     setTimeout(function() {
-                        window.location.href = res.data.redirect || 'dashboard.php';
-                    }, 800);
+                        window.location.href = (res.data && res.data.redirect) ? res.data.redirect : 'dashboard.php';
+                    }, 600);
                 } else {
                     if (typeof HF !== 'undefined' && HF.btnReset) {
-                        HF.btnReset(btn, origContent);
+                        HF.btnReset(btn);
                     } else {
                         btn.prop('disabled', false).html(origContent);
                     }
-                    if (res.message.toLowerCase().includes('password')) {
-                        HF.showFieldError('#loginPassword', res.message);
-                    } else {
-                        HF.showFieldError('#loginEmail', res.message);
+                    showAlert(res.message || 'Invalid email or password. Please try again.');
+                    showEmailErr('Check your email');
+                    showPassErr('Check your password');
+                    if (typeof HF !== 'undefined') {
+                        HF.toast('error', res.message || 'Authentication failed');
                     }
                 }
             },
             error: function() {
                 if (typeof HF !== 'undefined' && HF.btnReset) {
-                    HF.btnReset(btn, origContent);
-                    HF.toast('error', 'Connection Error. Please try again.');
+                    HF.btnReset(btn);
                 } else {
                     btn.prop('disabled', false).html(origContent);
+                }
+                showAlert('Connection error. Please check your internet connection and try again.');
+                if (typeof HF !== 'undefined') {
+                    HF.toast('error', 'Connection Error. Please try again.');
                 }
             }
         });

@@ -25,6 +25,12 @@ if (isset($_SESSION['user_id'])) {
             <p class="text-xs text-slate-500 mt-1">Join thousands of homeowners trusting HomeFix Quetta</p>
         </div>
 
+        <!-- Alert Box for Error / Notice -->
+        <div id="registerAlertBox" class="hidden p-3.5 rounded-2xl text-xs font-semibold bg-rose-50 border border-rose-200 text-rose-700 flex items-center gap-2.5">
+            <i data-lucide="alert-circle" class="w-4 h-4 text-rose-600 shrink-0"></i>
+            <span id="registerAlertMsg">Please fill in all required fields.</span>
+        </div>
+
         <!-- Registration Form -->
         <form id="customerRegisterForm" class="space-y-4 hf-form" novalidate>
             <input type="hidden" name="action" value="register">
