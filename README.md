@@ -16,9 +16,45 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![GSAP Animations](https://img.shields.io/badge/GSAP-3.12-88CE02?style=for-the-badge&logo=greensock&logoColor=white)](https://greensock.com/gsap/)
 
-[🌐 Live Demo Website](https://homefixquetta.infinityfree.io/) • [📖 Deployment Guide](DEPLOYMENT_GUIDE.md) • [👤 Developer Profile](https://github.com/Dopevibe)
+[🌐 Live Demo Website](https://homefixquetta.infinityfree.io/) • [🗄️ Database Script](database/homefix_quetta.sql) • [👤 Developer Profile](https://github.com/Dopevibe)
 
 </div>
+
+---
+
+## 📋 Final Project Submission Checklist & Deliverables
+
+| Deliverable | Description | Link / Location |
+| :--- | :--- | :--- |
+| 🌐 **Live Website Link** | Deployed, publicly accessible web application on live server | [https://homefixquetta.infinityfree.io/](https://homefixquetta.infinityfree.io/) |
+| 💻 **GitHub Repository** | Clean, well-commented source code repository | [https://github.com/Dopevibe/homefix-quetta](https://github.com/Dopevibe/homefix-quetta) |
+| 🗄️ **Database Script** | Complete working `.sql` dump file with schema & seed data | [`database/homefix_quetta.sql`](database/homefix_quetta.sql) |
+| 🎥 **Demo Video** | 3–5 minute video walkthrough demonstrating core features | Provided in project submission portal |
+| 📄 **Project Report** | 3-page document covering business problem, architecture & AI tools | Provided in project submission portal |
+
+---
+
+## 🗄️ Database Script & Schema Overview
+
+The complete SQL dump file is located in the repository at [`database/homefix_quetta.sql`](database/homefix_quetta.sql).
+
+### Database Schema Structure:
+* **`users`**: Manages accounts with strict session isolation between `admin` and `customer` roles.
+* **`categories`**: 4 primary service categories (Plumbing, Electrical, Painting, Handyman).
+* **`services`**: 12 detailed service packages with pricing, estimated duration, and checklists.
+* **`technicians`**: Verified technician profiles with ratings, experience, and live availability toggles.
+* **`bookings`**: Booking records linked with auto-generated references (`HFQ-XXXXXX`), customer identities, status pipelines, and photo attachments.
+* **`reviews`**: 5-star rating system with customer feedback and moderation status.
+* **`gallery`**: Before and after interactive photo showcase.
+* **`contact_messages`**: Public inquiry forms and contact records.
+* **`settings`**: System metadata, office location in Satellite Town Quetta, contact numbers, and working hours.
+
+### Quick Database Import Instructions:
+1. Open **phpMyAdmin** or your MySQL client.
+2. Create a new database named `homefix_quetta` (Collation: `utf8mb4_unicode_ci`).
+3. Click the **Import** tab.
+4. Choose the file [`database/homefix_quetta.sql`](database/homefix_quetta.sql) and click **Go** / **Execute**.
+5. All 9 tables with complete sample records and admin/customer test accounts will be created instantly.
 
 ---
 
