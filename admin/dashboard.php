@@ -62,7 +62,7 @@ $areaStats = Database::fetchAll(
     </header>
 
     <!-- Scrollable Workspace -->
-    <main class="flex-1 overflow-y-auto p-6 space-y-6">
+    <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 pb-32 sm:pb-16 lg:pb-12 space-y-6">
         
         <!-- Metrics Row -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">

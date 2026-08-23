@@ -4,8 +4,11 @@
  */
 $currentAdminScript = basename($_SERVER['SCRIPT_NAME'] ?? '');
 ?>
+<!-- Sidebar Backdrop Overlay (Mobile) -->
+<div id="adminSidebarBackdrop" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-30 hidden transition-opacity duration-300"></div>
+
 <!-- Sidebar -->
-<aside id="adminSidebar" class="w-64 bg-slate-950 border-r border-slate-800 flex flex-col justify-between shrink-0 transition-transform duration-300 z-30 absolute inset-y-0 left-0 lg:static -translate-x-full lg:translate-x-0">
+<aside id="adminSidebar" class="w-64 bg-slate-950 border-r border-slate-800 flex flex-col justify-between shrink-0 transition-transform duration-300 z-40 fixed lg:static inset-y-0 left-0 -translate-x-full lg:translate-x-0 shadow-2xl lg:shadow-none">
     
     <!-- Top Brand & Navigation -->
     <div class="p-6 space-y-6 overflow-y-auto">

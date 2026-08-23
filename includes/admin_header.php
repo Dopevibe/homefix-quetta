@@ -103,4 +103,4 @@ try {
     <!-- Design System CSS -->
     <link rel="stylesheet" href="<?= asset('assets/css/style.css') ?>">
 </head>
-<body class="bg-slate-900 text-slate-100 font-sans antialiased flex h-screen overflow-hidden">
+<body class="bg-slate-900 text-slate-100 font-sans antialiased flex h-screen h-[100dvh] overflow-hidden">

@@ -30,7 +30,7 @@ $categories = Database::fetchAll(
         </button>
     </header>
 
-    <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6">
+    <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 pb-32 sm:pb-16 lg:pb-12 space-y-6">
         
         <!-- 1. Desktop Responsive Table View -->
         <div class="hidden md:block bg-slate-950 border border-slate-800 rounded-3xl shadow-xl overflow-hidden">

@@ -23,7 +23,7 @@ $gallery = Database::fetchAll("SELECT * FROM gallery ORDER BY id ASC");
         </span>
     </header>
 
-    <main class="flex-1 overflow-y-auto p-6 space-y-6">
+    <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 pb-32 sm:pb-16 lg:pb-12 space-y-6">
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <?php foreach ($gallery as $g): ?>
