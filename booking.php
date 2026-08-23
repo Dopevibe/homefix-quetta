@@ -2,6 +2,9 @@
 /**
  * HomeFix Quetta - Interactive Booking Page
  */
+require_once __DIR__ . '/includes/auth.php';
+require_customer('booking.php');
+
 $pageTitle = 'Book a Service in Quetta | HomeFix Quetta';
 $pageDescription = 'Schedule certified plumbers, electricians, painters, and handymen across Quetta, Balochistan. Same-day & scheduled appointments.';
 require_once __DIR__ . '/includes/header.php';
@@ -19,13 +22,13 @@ $allServices = Database::fetchAll(
 $preselectedServiceId = (int)($_GET['service'] ?? 0);
 $preselectedArea = trim($_GET['area'] ?? '');
 
-// Pre-fill customer details if logged in
-$currUser = current_user();
-$defaultName = $currUser['name'] ?? '';
-$defaultEmail = $currUser['email'] ?? '';
-$defaultPhone = $currUser['phone'] ?? '';
-$defaultArea = $currUser['area'] ?? $preselectedArea;
-$defaultAddress = $currUser['address'] ?? '';
+// Pre-fill verified customer details
+$customer = current_customer();
+$defaultName = $customer['name'] ?? '';
+$defaultEmail = $customer['email'] ?? '';
+$defaultPhone = $customer['phone'] ?? '';
+$defaultArea = $customer['area'] ?? $preselectedArea;
+$defaultAddress = $customer['address'] ?? '';
 ?>
 
 <!-- Booking Hero Header -->
@@ -141,28 +144,35 @@ $defaultAddress = $currUser['address'] ?? '';
                         </div>
                         <div>
                             <h3 class="font-heading font-bold text-lg text-slate-900">Quetta Location & Contact</h3>
-                            <p class="text-xs text-slate-500">Where should our technician report for the service?</p>
+                            <p class="text-xs text-slate-500">Verified account identity locked for technician security</p>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label for="customerName" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Full Name <span class="text-rose-500">*</span></label>
-                            <input type="text" id="customerName" name="customer_name" value="<?= e($defaultName) ?>" required placeholder="e.g. Farhan Baloch" class="form-input text-sm">
+                            <label for="customerName" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Account Holder Name</label>
+                            <input type="text" id="customerName" name="customer_name" value="<?= e($defaultName) ?>" readonly class="form-input text-sm bg-slate-100 text-slate-600 cursor-not-allowed border-slate-200">
+                            <span class="text-[11px] text-teal-700 font-semibold flex items-center gap-1 mt-1">
+                                <i data-lucide="lock" class="w-3.5 h-3.5"></i> Locked to your verified account
+                            </span>
                         </div>
                         <div>
-                            <label for="customerPhone" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Mobile Phone / WhatsApp <span class="text-rose-500">*</span></label>
+                            <label for="customerEmail" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Account Email Address</label>
+                            <input type="email" id="customerEmail" name="customer_email" value="<?= e($defaultEmail) ?>" readonly class="form-input text-sm bg-slate-100 text-slate-600 cursor-not-allowed border-slate-200">
+                            <span class="text-[11px] text-teal-700 font-semibold flex items-center gap-1 mt-1">
+                                <i data-lucide="lock" class="w-3.5 h-3.5"></i> Notification email
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label for="customerPhone" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Mobile Phone / WhatsApp <span class="text-rose-500">*</span></label>
                             <input type="tel" id="customerPhone" name="customer_phone" value="<?= e($defaultPhone) ?>" required placeholder="e.g. 0333 7819201" class="form-input text-sm">
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label for="customerEmail" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Email Address (Optional)</label>
-                            <input type="email" id="customerEmail" name="customer_email" value="<?= e($defaultEmail) ?>" placeholder="e.g. name@example.com" class="form-input text-sm">
+                            <span class="text-[11px] text-slate-400 block mt-0.5">Technician will call this number before arrival</span>
                         </div>
                         <div>
-                            <label for="areaSelect" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Quetta Neighborhood / Sector <span class="text-rose-500">*</span></label>
+                            <label for="areaSelect" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Quetta Neighborhood / Sector <span class="text-rose-500">*</span></label>
                             <select id="areaSelect" name="area" required class="form-input text-sm">
                                 <option value="" disabled selected>-- Select Area in Quetta --</option>
                                 <?php foreach (QUETTA_AREAS as $area): ?>
@@ -173,12 +183,12 @@ $defaultAddress = $currUser['address'] ?? '';
                     </div>
 
                     <div>
-                        <label for="customerAddress" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Complete Street Address / House # <span class="text-rose-500">*</span></label>
+                        <label for="customerAddress" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Complete Street Address / House # <span class="text-rose-500">*</span></label>
                         <input type="text" id="customerAddress" name="address" value="<?= e($defaultAddress) ?>" required placeholder="e.g. House 45, Street 4, Sector B, Near Government Girls College" class="form-input text-sm">
                     </div>
 
                     <div>
-                        <label for="bookingNotes" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Special Instructions / Gate Landmark (Optional)</label>
+                        <label for="bookingNotes" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Special Instructions / Gate Landmark (Optional)</label>
                         <input type="text" id="bookingNotes" name="notes" placeholder="e.g. Green gate next to Al-Falah Mosque" class="form-input text-sm">
                     </div>
                 </div>

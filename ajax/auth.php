@@ -1,10 +1,13 @@
 <?php
 /**
- * AJAX Customer Authentication Controller
+ * AJAX Customer & Admin Authentication Controller
+ * HomeFix Quetta
  */
 define('IS_AJAX', true);
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../includes/auth.php';
+require_once __DIR__ . '/../includes/admin_auth.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -51,15 +54,23 @@ switch ($action) {
             );
             $userId = Database::lastInsertId();
 
-            // Set session
-            $_SESSION['user_id'] = $userId;
-            $_SESSION['user_name'] = $name;
-            $_SESSION['user_email'] = $email;
-            $_SESSION['user_phone'] = $phone;
-            $_SESSION['user_role'] = 'customer';
+            // Set Isolated Customer Session
+            $_SESSION['customer'] = [
+                'id'      => (int)$userId,
+                'name'    => $name,
+                'email'   => $email,
+                'phone'   => $phone,
+                'role'    => 'customer',
+                'area'    => $area,
+                'address' => $address,
+                'avatar'  => null
+            ];
+
+            $redirectUrl = $_SESSION['customer_redirect_url'] ?? base_url('dashboard.php');
+            unset($_SESSION['customer_redirect_url']);
 
             json_response(true, 'Welcome to HomeFix Quetta! Your account was created successfully.', [
-                'redirect' => base_url('dashboard.php')
+                'redirect' => $redirectUrl
             ]);
         } catch (Exception $e) {
             error_log('Registration Error: ' . $e->getMessage());
@@ -85,32 +96,63 @@ switch ($action) {
             json_response(false, 'Your account is inactive or suspended. Please contact support.');
         }
 
-        // Set session
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['user_name'] = $user['name'];
-        $_SESSION['user_email'] = $user['email'];
-        $_SESSION['user_phone'] = $user['phone'];
-        $_SESSION['user_role'] = $user['role'];
-        $_SESSION['user_avatar'] = $user['avatar'];
+        if ($user['role'] === 'admin') {
+            // Set Isolated Admin Session
+            $_SESSION['admin'] = [
+                'id'     => (int)$user['id'],
+                'name'   => $user['name'],
+                'email'  => $user['email'],
+                'phone'  => $user['phone'] ?? '',
+                'role'   => 'admin',
+                'avatar' => $user['avatar'] ?? null
+            ];
 
-        $redirectUrl = ($user['role'] === 'admin') ? base_url('admin/dashboard.php') : base_url('dashboard.php');
-        if (!empty($_SESSION['redirect_url'])) {
-            $redirectUrl = $_SESSION['redirect_url'];
-            unset($_SESSION['redirect_url']);
+            $redirectUrl = base_url('admin/dashboard.php');
+            if (!empty($_SESSION['admin_redirect_url'])) {
+                $redirectUrl = $_SESSION['admin_redirect_url'];
+                unset($_SESSION['admin_redirect_url']);
+            }
+
+            json_response(true, 'Admin authentication granted. Welcome, ' . $user['name'] . '!', [
+                'redirect' => $redirectUrl,
+                'role'     => 'admin'
+            ]);
+        } else {
+            // Set Isolated Customer Session
+            $_SESSION['customer'] = [
+                'id'      => (int)$user['id'],
+                'name'    => $user['name'],
+                'email'   => $user['email'],
+                'phone'   => $user['phone'],
+                'role'    => 'customer',
+                'area'    => $user['area'] ?? '',
+                'address' => $user['address'] ?? '',
+                'avatar'  => $user['avatar'] ?? null
+            ];
+
+            $redirectUrl = base_url('dashboard.php');
+            if (!empty($_SESSION['customer_redirect_url'])) {
+                $redirectUrl = $_SESSION['customer_redirect_url'];
+                unset($_SESSION['customer_redirect_url']);
+            } elseif (!empty($_POST['redirect_to'])) {
+                $redirectUrl = base_url($_POST['redirect_to']);
+            }
+
+            json_response(true, 'Login successful. Welcome back, ' . $user['name'] . '!', [
+                'redirect' => $redirectUrl,
+                'role'     => 'customer'
+            ]);
         }
-
-        json_response(true, 'Login successful. Welcome back, ' . $user['name'] . '!', [
-            'redirect' => $redirectUrl,
-            'role' => $user['role']
-        ]);
         break;
 
     case 'update_profile':
-        if (empty($_SESSION['user_id'])) {
+        if (!is_customer_logged_in() && !is_admin_logged_in()) {
             json_response(false, 'Unauthorized. Please sign in.', [], 401);
         }
 
-        $userId = $_SESSION['user_id'];
+        $isCustomer = is_customer_logged_in();
+        $userId = $isCustomer ? $_SESSION['customer']['id'] : $_SESSION['admin']['id'];
+
         $name = trim($_POST['name'] ?? '');
         $phone = trim($_POST['phone'] ?? '');
         $area = trim($_POST['area'] ?? '');
@@ -134,7 +176,6 @@ switch ($action) {
                 "UPDATE users SET name = ?, phone = ?, area = ?, address = ?, avatar = ? WHERE id = ?",
                 [$name, $phone, $area, $address, $avatarPath, $userId]
             );
-            $_SESSION['user_avatar'] = $avatarPath;
         } else {
             Database::execute(
                 "UPDATE users SET name = ?, phone = ?, area = ?, address = ? WHERE id = ?",
@@ -142,8 +183,21 @@ switch ($action) {
             );
         }
 
-        $_SESSION['user_name'] = $name;
-        $_SESSION['user_phone'] = $phone;
+        if ($isCustomer) {
+            $_SESSION['customer']['name'] = $name;
+            $_SESSION['customer']['phone'] = $phone;
+            $_SESSION['customer']['area'] = $area;
+            $_SESSION['customer']['address'] = $address;
+            if ($avatarPath) {
+                $_SESSION['customer']['avatar'] = $avatarPath;
+            }
+        } else {
+            $_SESSION['admin']['name'] = $name;
+            $_SESSION['admin']['phone'] = $phone;
+            if ($avatarPath) {
+                $_SESSION['admin']['avatar'] = $avatarPath;
+            }
+        }
 
         $newAvatarUrl = $avatarPath ? asset('uploads/' . $avatarPath) : null;
 
@@ -153,11 +207,11 @@ switch ($action) {
         break;
 
     case 'change_password':
-        if (empty($_SESSION['user_id'])) {
+        if (!is_customer_logged_in() && !is_admin_logged_in()) {
             json_response(false, 'Unauthorized.', [], 401);
         }
 
-        $userId = $_SESSION['user_id'];
+        $userId = is_customer_logged_in() ? $_SESSION['customer']['id'] : $_SESSION['admin']['id'];
         $currentPassword = $_POST['current_password'] ?? '';
         $newPassword = $_POST['new_password'] ?? '';
         $confirmPassword = $_POST['confirm_password'] ?? '';
@@ -188,3 +242,4 @@ switch ($action) {
     default:
         json_response(false, 'Invalid auth action.');
 }
+

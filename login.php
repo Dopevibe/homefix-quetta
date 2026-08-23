@@ -7,14 +7,14 @@ $pageDescription = 'Sign in to your HomeFix Quetta account to manage and track y
 require_once __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/includes/navbar.php';
 
-if (isset($_SESSION['user_id'])) {
-    if (($_SESSION['user_role'] ?? '') === 'admin') {
-        header('Location: ' . base_url('admin/dashboard.php'));
-    } else {
-        header('Location: ' . base_url('dashboard.php'));
-    }
+if (is_customer_logged_in()) {
+    $redirect = $_GET['redirect'] ?? 'dashboard.php';
+    header('Location: ' . base_url($redirect));
     exit;
 }
+
+$notice = $_GET['notice'] ?? '';
+$redirectTo = $_GET['redirect'] ?? '';
 ?>
 
 <section class="min-h-[calc(100vh-160px)] flex items-center justify-center py-14 px-4 sm:px-6 lg:px-8 bg-slate-50">
@@ -26,8 +26,15 @@ if (isset($_SESSION['user_id'])) {
                 <i data-lucide="lock" class="w-6 h-6"></i>
             </div>
             <h2 class="text-2xl font-extrabold font-heading text-slate-900">Welcome Back</h2>
-            <p class="text-xs text-slate-500 mt-1">Sign in to your HomeFix Quetta account</p>
+            <p class="text-xs text-slate-500 mt-1">Sign in to your HomeFix Quetta customer account</p>
         </div>
+
+        <?php if ($notice === 'login_to_book' || $notice === 'auth_required'): ?>
+            <div class="p-3.5 rounded-2xl text-xs font-semibold bg-teal-50 border border-teal-200 text-teal-800 flex items-center gap-2.5 shadow-sm">
+                <i data-lucide="info" class="w-4 h-4 text-teal-600 shrink-0"></i>
+                <span>Please sign in to schedule and track your service in Quetta.</span>
+            </div>
+        <?php endif; ?>
 
         <!-- Alert Box for Error / Notice -->
         <div id="loginAlertBox" class="hidden p-3.5 rounded-2xl text-xs font-semibold bg-rose-50 border border-rose-200 text-rose-700 flex items-center gap-2.5">
@@ -38,6 +45,9 @@ if (isset($_SESSION['user_id'])) {
         <!-- Login Form -->
         <form id="customerLoginForm" class="space-y-4 hf-form" novalidate>
             <input type="hidden" name="action" value="login">
+            <?php if (!empty($redirectTo)): ?>
+                <input type="hidden" name="redirect_to" value="<?= e($redirectTo) ?>">
+            <?php endif; ?>
             
             <div class="form-group space-y-1.5">
                 <label for="loginEmail" class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Email Address</label>

@@ -9,16 +9,16 @@ require_admin();
 
 // Single Authoritative Source of Truth for Admin Profile
 $adminUser = current_admin();
-if (!empty($_SESSION['user_id'])) {
+if (!empty($_SESSION['admin']['id'])) {
     try {
-        $dbAdmin = Database::fetch("SELECT id, name, email, phone, role, status, avatar, created_at, updated_at FROM users WHERE id = ?", [$_SESSION['user_id']]);
+        $dbAdmin = Database::fetch("SELECT id, name, email, phone, role, status, avatar, created_at, updated_at FROM users WHERE id = ? AND role = 'admin'", [$_SESSION['admin']['id']]);
         if ($dbAdmin) {
             $adminUser = $dbAdmin;
-            $_SESSION['user_name'] = $dbAdmin['name'];
-            $_SESSION['user_email'] = $dbAdmin['email'];
-            $_SESSION['user_phone'] = $dbAdmin['phone'];
-            $_SESSION['user_role'] = $dbAdmin['role'];
-            $_SESSION['user_avatar'] = $dbAdmin['avatar'];
+            $_SESSION['admin']['name'] = $dbAdmin['name'];
+            $_SESSION['admin']['email'] = $dbAdmin['email'];
+            $_SESSION['admin']['phone'] = $dbAdmin['phone'];
+            $_SESSION['admin']['role'] = $dbAdmin['role'];
+            $_SESSION['admin']['avatar'] = $dbAdmin['avatar'];
         }
     } catch (Exception $e) {
         error_log('Admin user sync error: ' . $e->getMessage());

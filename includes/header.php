@@ -4,15 +4,11 @@
  */
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../includes/auth.php';
 
 $pageTitle = $pageTitle ?? 'HomeFix Quetta | Trusted Local Home Services in Quetta';
 $pageDescription = $pageDescription ?? 'Book verified plumbing, electrical, painting and handyman services in Quetta, Balochistan with HomeFix. Fast doorstep service.';
-$currentUser = isset($_SESSION['user_id']) ? [
-    'id' => $_SESSION['user_id'],
-    'name' => $_SESSION['user_name'] ?? 'User',
-    'email' => $_SESSION['user_email'] ?? '',
-    'role' => $_SESSION['user_role'] ?? 'customer'
-] : null;
+$currentUser = current_customer();
 ?>
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">

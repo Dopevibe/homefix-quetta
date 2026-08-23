@@ -75,39 +75,36 @@ $currentScript = basename($_SERVER['SCRIPT_NAME'] ?? '');
 
             <!-- Action CTAs & Auth Controls -->
             <div class="hidden lg:flex items-center gap-4">
-                <?php if (isset($_SESSION['user_id'])): ?>
+                <?php if (is_customer_logged_in()): ?>
+                    <?php $customer = current_customer(); ?>
                     <!-- Logged in Customer Dropdown -->
                     <div class="relative group">
                         <button class="flex items-center gap-2.5 py-2 px-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 transition shadow-sm">
-                            <div class="w-8 h-8 rounded-lg bg-teal-100 text-teal-800 font-bold flex items-center justify-center text-xs">
-                                <?= strtoupper(substr($_SESSION['user_name'] ?? 'U', 0, 1)) ?>
+                            <div class="w-8 h-8 rounded-lg bg-teal-600 text-white font-bold flex items-center justify-center text-xs shadow-sm">
+                                <?= strtoupper(substr($customer['name'] ?? 'C', 0, 1)) ?>
                             </div>
-                            <span class="text-sm font-semibold text-slate-800 max-w-[120px] truncate"><?= e($_SESSION['user_name'] ?? 'Account') ?></span>
+                            <span class="text-sm font-semibold text-slate-800 max-w-[120px] truncate"><?= e($customer['name'] ?? 'Customer') ?></span>
                             <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400"></i>
                         </button>
                         <div class="absolute right-0 mt-2 w-56 bg-white border border-slate-200 rounded-2xl shadow-xl py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 z-50">
                             <div class="px-4 py-2.5 border-b border-slate-100">
-                                <p class="text-xs text-slate-400">Signed in as</p>
-                                <p class="text-sm font-bold text-slate-800 truncate"><?= e($_SESSION['user_email'] ?? '') ?></p>
+                                <p class="text-[11px] font-medium text-slate-400">Signed in as</p>
+                                <p class="text-xs font-bold text-slate-800 truncate"><?= e($customer['email'] ?? '') ?></p>
                             </div>
-                            <?php if (($_SESSION['user_role'] ?? '') === 'admin'): ?>
-                                <a href="<?= base_url('admin/dashboard.php') ?>" class="flex items-center gap-2 px-4 py-2.5 text-sm text-teal-700 font-semibold hover:bg-teal-50">
-                                    <i data-lucide="shield-check" class="w-4 h-4"></i> Admin Panel
-                                </a>
-                            <?php else: ?>
-                                <a href="<?= base_url('dashboard.php?tab=bookings') ?>" class="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 font-medium">
-                                    <i data-lucide="layout-dashboard" class="w-4 h-4 text-teal-600"></i> Customer Dashboard
-                                </a>
-                                <a href="<?= base_url('dashboard.php?tab=profile') ?>" class="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 font-medium">
-                                    <i data-lucide="user" class="w-4 h-4 text-slate-400"></i> Personal Information
-                                </a>
-                                <a href="<?= base_url('dashboard.php?tab=security') ?>" class="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 font-medium">
-                                    <i data-lucide="lock" class="w-4 h-4 text-slate-400"></i> Security & Password
-                                </a>
-                            <?php endif; ?>
+                            
+                            <a href="<?= base_url('dashboard.php?tab=bookings') ?>" class="flex items-center gap-2.5 px-4 py-2.5 text-xs text-slate-700 hover:bg-slate-50 font-semibold transition">
+                                <i data-lucide="calendar" class="w-4 h-4 text-teal-600"></i> My Bookings
+                            </a>
+                            <a href="<?= base_url('dashboard.php?tab=profile') ?>" class="flex items-center gap-2.5 px-4 py-2.5 text-xs text-slate-700 hover:bg-slate-50 font-semibold transition">
+                                <i data-lucide="user" class="w-4 h-4 text-slate-400"></i> Personal Information
+                            </a>
+                            <a href="<?= base_url('dashboard.php?tab=security') ?>" class="flex items-center gap-2.5 px-4 py-2.5 text-xs text-slate-700 hover:bg-slate-50 font-semibold transition">
+                                <i data-lucide="shield-check" class="w-4 h-4 text-slate-400"></i> Security & Password
+                            </a>
+                            
                             <div class="border-t border-slate-100 mt-1"></div>
-                            <a href="<?= base_url('logout.php') ?>" class="flex items-center gap-2 px-4 py-2.5 text-sm text-rose-600 hover:bg-rose-50 font-medium">
-                                <i data-lucide="log-out" class="w-4 h-4"></i> Logout
+                            <a href="<?= base_url('logout.php') ?>" class="flex items-center gap-2.5 px-4 py-2.5 text-xs text-rose-600 hover:bg-rose-50 font-semibold transition">
+                                <i data-lucide="log-out" class="w-4 h-4 text-rose-500"></i> Log Out
                             </a>
                         </div>
                     </div>
@@ -166,9 +163,19 @@ $currentScript = basename($_SERVER['SCRIPT_NAME'] ?? '');
         </div>
 
         <div class="pt-6 border-t border-slate-100 space-y-3">
-            <?php if (isset($_SESSION['user_id'])): ?>
-                <a href="<?= base_url('dashboard.php') ?>" class="w-full text-center block py-3 rounded-xl bg-slate-900 text-white font-semibold text-sm">Customer Dashboard</a>
-                <a href="<?= base_url('logout.php') ?>" class="w-full text-center block py-2.5 rounded-xl border border-rose-200 text-rose-600 font-semibold text-sm">Sign Out</a>
+            <?php if (is_customer_logged_in()): ?>
+                <?php $cust = current_customer(); ?>
+                <div class="p-3 bg-teal-50 rounded-2xl border border-teal-100 flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-teal-600 text-white font-bold flex items-center justify-center text-sm">
+                        <?= strtoupper(substr($cust['name'] ?? 'C', 0, 1)) ?>
+                    </div>
+                    <div class="truncate">
+                        <div class="text-xs font-bold text-slate-800 truncate"><?= e($cust['name']) ?></div>
+                        <div class="text-[11px] text-slate-500 truncate"><?= e($cust['email']) ?></div>
+                    </div>
+                </div>
+                <a href="<?= base_url('dashboard.php') ?>" class="w-full text-center block py-3 rounded-xl bg-teal-600 text-white font-semibold text-sm">Customer Dashboard</a>
+                <a href="<?= base_url('logout.php') ?>" class="w-full text-center block py-2.5 rounded-xl border border-rose-200 text-rose-600 font-semibold text-sm">Log Out</a>
             <?php else: ?>
                 <a href="<?= base_url('login.php') ?>" class="w-full text-center block py-3 rounded-xl bg-slate-100 text-slate-800 font-semibold text-sm">Customer Login</a>
                 <a href="<?= base_url('register.php') ?>" class="w-full text-center block py-3 rounded-xl border border-slate-300 text-slate-700 font-semibold text-sm">Create Account</a>

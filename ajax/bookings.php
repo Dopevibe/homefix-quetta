@@ -5,6 +5,7 @@
 define('IS_AJAX', true);
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../includes/auth.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -12,9 +13,19 @@ $action = $_POST['action'] ?? $_GET['action'] ?? 'create';
 
 switch ($action) {
     case 'create':
+        // Enforce Customer Login (Guest Restriction)
+        if (!is_customer_logged_in()) {
+            json_response(false, 'Please sign in or create an account to book a service.', [
+                'redirect' => base_url('login.php?redirect=booking.php&notice=login_to_book')
+            ]);
+        }
+
+        $customer = current_customer();
+        $userId = (int)$customer['id'];
+        $name = $customer['name'];     // Enforce verified identity
+        $email = $customer['email'];   // Enforce verified identity
+
         $serviceId = (int)($_POST['service_id'] ?? 0);
-        $name = trim($_POST['customer_name'] ?? '');
-        $email = trim($_POST['customer_email'] ?? '');
         $phone = trim($_POST['customer_phone'] ?? '');
         $area = trim($_POST['area'] ?? '');
         $address = trim($_POST['address'] ?? '');
@@ -24,7 +35,7 @@ switch ($action) {
         $notes = trim($_POST['notes'] ?? '');
 
         // Validation
-        if (!$serviceId || empty($name) || empty($phone) || empty($area) || empty($address) || empty($date) || empty($time) || empty($problem)) {
+        if (!$serviceId || empty($phone) || empty($area) || empty($address) || empty($date) || empty($time) || empty($problem)) {
             json_response(false, 'Please fill in all required booking fields.');
         }
 
@@ -37,16 +48,6 @@ switch ($action) {
         // Validate date (must not be past date)
         if (strtotime($date) < strtotime(date('Y-m-d'))) {
             json_response(false, 'Preferred date cannot be in the past.');
-        }
-
-        // Check if user is logged in
-        $userId = $_SESSION['user_id'] ?? null;
-        if (!$userId && !empty($email)) {
-            // Find existing user by email or leave as guest booking
-            $existingUser = Database::fetch("SELECT id FROM users WHERE email = ?", [$email]);
-            if ($existingUser) {
-                $userId = $existingUser['id'];
-            }
         }
 
         // Handle Image Attachment
@@ -105,12 +106,12 @@ switch ($action) {
         break;
 
     case 'cancel':
-        if (empty($_SESSION['user_id'])) {
+        if (!is_customer_logged_in()) {
             json_response(false, 'Please sign in to cancel your booking.', [], 401);
         }
 
         $bookingId = (int)($_POST['booking_id'] ?? 0);
-        $userId = $_SESSION['user_id'];
+        $userId = (int)$_SESSION['customer']['id'];
 
         $booking = Database::fetch("SELECT * FROM bookings WHERE id = ? AND user_id = ?", [$bookingId, $userId]);
         if (!$booking) {

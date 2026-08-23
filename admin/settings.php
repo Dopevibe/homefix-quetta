@@ -9,14 +9,14 @@ require_once __DIR__ . '/../includes/admin_header.php';
 require_once __DIR__ . '/../includes/admin_sidebar.php';
 
 // Fetch current administrator profile directly from database
-$adminId = $adminUser['id'] ?? ($_SESSION['user_id'] ?? 0);
-$adminData = Database::fetch("SELECT * FROM users WHERE id = ?", [$adminId]) ?: [];
+$adminId = $adminUser['id'] ?? ($_SESSION['admin']['id'] ?? 0);
+$adminData = Database::fetch("SELECT * FROM users WHERE id = ? AND role = 'admin'", [$adminId]) ?: [];
 
 // Fallback to session values if DB record empty
-$adminName = $adminData['name'] ?? ($_SESSION['user_name'] ?? 'Administrator');
-$adminEmail = $adminData['email'] ?? ($_SESSION['user_email'] ?? 'admin@homefix.pk');
-$adminPhone = $adminData['phone'] ?? ($_SESSION['user_phone'] ?? '+92 331 7374824');
-$adminRole = ucfirst($adminData['role'] ?? ($_SESSION['user_role'] ?? 'admin'));
+$adminName = $adminData['name'] ?? ($_SESSION['admin']['name'] ?? 'Administrator');
+$adminEmail = $adminData['email'] ?? ($_SESSION['admin']['email'] ?? 'admin@homefix.pk');
+$adminPhone = $adminData['phone'] ?? ($_SESSION['admin']['phone'] ?? '+92 331 7374824');
+$adminRole = ucfirst($adminData['role'] ?? ($_SESSION['admin']['role'] ?? 'admin'));
 $adminStatus = ucfirst($adminData['status'] ?? 'active');
 $adminCreated = !empty($adminData['created_at']) ? format_date($adminData['created_at'], 'M d, Y') : 'Active Member';
 $adminUpdated = !empty($adminData['updated_at']) ? format_date($adminData['updated_at'], 'M d, Y \a\t h:i A') : 'Recently';

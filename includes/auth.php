@@ -1,31 +1,56 @@
 <?php
 /**
- * Customer Authentication Middleware
+ * Customer Authentication Middleware - Isolated Namespace
+ * HomeFix Quetta
  */
 require_once __DIR__ . '/../config/config.php';
 
-if (!function_exists('require_auth')) {
-    function require_auth() {
-        if (empty($_SESSION['user_id'])) {
-            $_SESSION['redirect_url'] = $_SERVER['REQUEST_URI'] ?? 'dashboard.php';
-            header('Location: ' . base_url('login.php?error=auth_required'));
+if (!function_exists('is_customer_logged_in')) {
+    function is_customer_logged_in() {
+        return !empty($_SESSION['customer']['id']);
+    }
+}
+
+if (!function_exists('current_customer')) {
+    function current_customer() {
+        if (!is_customer_logged_in()) {
+            return null;
+        }
+        return $_SESSION['customer'];
+    }
+}
+
+// Backward-compatible alias
+if (!function_exists('current_user')) {
+    function current_user() {
+        return current_customer();
+    }
+}
+
+if (!function_exists('require_customer')) {
+    function require_customer($redirectParam = 'dashboard.php') {
+        if (!is_customer_logged_in()) {
+            $_SESSION['customer_redirect_url'] = $_SERVER['REQUEST_URI'] ?? $redirectParam;
+            header('Location: ' . base_url('login.php?notice=auth_required'));
             exit;
         }
     }
 }
 
-if (!function_exists('current_user')) {
-    function current_user() {
-        if (empty($_SESSION['user_id'])) return null;
-        return [
-            'id'      => $_SESSION['user_id'],
-            'name'    => $_SESSION['user_name'] ?? 'Customer',
-            'email'   => $_SESSION['user_email'] ?? '',
-            'phone'   => $_SESSION['user_phone'] ?? '',
-            'role'    => $_SESSION['user_role'] ?? 'customer',
-            'avatar'  => $_SESSION['user_avatar'] ?? null,
-            'area'    => $_SESSION['user_area'] ?? '',
-            'address' => $_SESSION['user_address'] ?? ''
-        ];
+if (!function_exists('require_auth')) {
+    function require_auth() {
+        require_customer();
     }
 }
+
+if (!function_exists('customer_logout')) {
+    function customer_logout() {
+        if (isset($_SESSION['customer'])) {
+            unset($_SESSION['customer']);
+        }
+        if (isset($_SESSION['customer_redirect_url'])) {
+            unset($_SESSION['customer_redirect_url']);
+        }
+    }
+}
+

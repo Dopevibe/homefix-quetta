@@ -215,36 +215,38 @@ function get_status_badge($status) {
 /**
  * Get current logged in customer
  */
+if (!function_exists('is_customer_logged_in')) {
+    function is_customer_logged_in() {
+        return !empty($_SESSION['customer']['id']);
+    }
+}
+
+if (!function_exists('current_customer')) {
+    function current_customer() {
+        if (!is_customer_logged_in()) return null;
+        return $_SESSION['customer'];
+    }
+}
+
 if (!function_exists('current_user')) {
     function current_user() {
-        if (empty($_SESSION['user_id'])) return null;
-        return [
-            'id'      => $_SESSION['user_id'],
-            'name'    => $_SESSION['user_name'] ?? 'Customer',
-            'email'   => $_SESSION['user_email'] ?? '',
-            'phone'   => $_SESSION['user_phone'] ?? '',
-            'role'    => $_SESSION['user_role'] ?? 'customer',
-            'avatar'  => $_SESSION['user_avatar'] ?? null,
-            'area'    => $_SESSION['user_area'] ?? '',
-            'address' => $_SESSION['user_address'] ?? ''
-        ];
+        return current_customer();
     }
 }
 
 /**
  * Get current logged in admin
  */
+if (!function_exists('is_admin_logged_in')) {
+    function is_admin_logged_in() {
+        return !empty($_SESSION['admin']['id']) && (($_SESSION['admin']['role'] ?? '') === 'admin');
+    }
+}
+
 if (!function_exists('current_admin')) {
     function current_admin() {
-        if (empty($_SESSION['user_id']) || ($_SESSION['user_role'] ?? '') !== 'admin') {
-            return null;
-        }
-        return [
-            'id'    => $_SESSION['user_id'],
-            'name'  => $_SESSION['user_name'] ?? 'Admin',
-            'email' => $_SESSION['user_email'] ?? '',
-            'role'  => $_SESSION['user_role'] ?? 'admin'
-        ];
+        if (!is_admin_logged_in()) return null;
+        return $_SESSION['admin'];
     }
 }
 

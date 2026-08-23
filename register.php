@@ -7,7 +7,7 @@ $pageDescription = 'Sign up for a free HomeFix Quetta account to book, manage, a
 require_once __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/includes/navbar.php';
 
-if (isset($_SESSION['user_id'])) {
+if (is_customer_logged_in()) {
     header('Location: ' . base_url('dashboard.php'));
     exit;
 }

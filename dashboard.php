@@ -4,17 +4,29 @@
  */
 require_once __DIR__ . '/includes/auth.php';
 require_once __DIR__ . '/config/database.php';
-require_auth();
+require_customer();
 
-$user = Database::fetch("SELECT * FROM users WHERE id = ?", [$_SESSION['user_id']]);
+$customer = current_customer();
+$user = Database::fetch("SELECT * FROM users WHERE id = ?", [$customer['id']]);
 if (!$user) {
-    header('Location: ' . base_url('logout.php'));
+    customer_logout();
+    header('Location: ' . base_url('login.php'));
     exit;
 }
 
 $pageTitle = 'Customer Dashboard | HomeFix Quetta';
 require_once __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/includes/navbar.php';
+
+// Active tab detection
+$activeTab = trim($_GET['tab'] ?? 'bookings');
+if ($activeTab === 'profile' || $activeTab === 'personal') {
+    $activeTab = 'profile';
+} elseif ($activeTab === 'security' || $activeTab === 'password') {
+    $activeTab = 'security';
+} else {
+    $activeTab = 'bookings';
+}
 
 // Fetch Customer Bookings with service and technician details
 $bookings = Database::fetchAll(
@@ -124,22 +136,22 @@ foreach ($bookings as $b) {
 
         <!-- Navigation Tabs for Mobile & Desktop -->
         <div class="flex items-center gap-2 border-b border-slate-200 pb-4 overflow-x-auto">
-            <button type="button" class="dash-tab-btn active px-4 sm:px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-2 transition bg-teal-600 text-white shadow-md shadow-teal-600/20 whitespace-nowrap" data-target="#tabBookings">
+            <button type="button" class="dash-tab-btn px-4 sm:px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-2 transition <?= ($activeTab === 'bookings') ? 'active bg-teal-600 text-white shadow-md shadow-teal-600/20' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200' ?> whitespace-nowrap" data-target="#tabBookings">
                 <i data-lucide="calendar" class="w-4 h-4"></i>
                 <span>My Bookings (<?= count($bookings) ?>)</span>
             </button>
-            <button type="button" class="dash-tab-btn px-4 sm:px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-2 transition bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 whitespace-nowrap" data-target="#tabProfile">
+            <button type="button" class="dash-tab-btn px-4 sm:px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-2 transition <?= ($activeTab === 'profile') ? 'active bg-teal-600 text-white shadow-md shadow-teal-600/20' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200' ?> whitespace-nowrap" data-target="#tabProfile">
                 <i data-lucide="user" class="w-4 h-4"></i>
                 <span>Personal Information</span>
             </button>
-            <button type="button" class="dash-tab-btn px-4 sm:px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-2 transition bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 whitespace-nowrap" data-target="#tabSecurity">
+            <button type="button" class="dash-tab-btn px-4 sm:px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-2 transition <?= ($activeTab === 'security') ? 'active bg-teal-600 text-white shadow-md shadow-teal-600/20' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200' ?> whitespace-nowrap" data-target="#tabSecurity">
                 <i data-lucide="shield-check" class="w-4 h-4"></i>
                 <span>Security & Password</span>
             </button>
         </div>
 
         <!-- TAB 1: BOOKINGS -->
-        <div id="tabBookings" class="dash-tab-content space-y-6">
+        <div id="tabBookings" class="dash-tab-content space-y-6 <?= ($activeTab === 'bookings') ? '' : 'hidden' ?>">
             
             <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden">
                 <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
@@ -322,7 +334,7 @@ foreach ($bookings as $b) {
         </div>
 
         <!-- TAB 2: PERSONAL INFORMATION -->
-        <div id="tabProfile" class="dash-tab-content hidden space-y-6">
+        <div id="tabProfile" class="dash-tab-content space-y-6 <?= ($activeTab === 'profile') ? '' : 'hidden' ?>">
             <div class="max-w-2xl bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-5">
                 <div class="flex items-center gap-3 pb-4 border-b border-slate-100">
                     <div class="w-10 h-10 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center font-bold">
@@ -378,7 +390,7 @@ foreach ($bookings as $b) {
         </div>
 
         <!-- TAB 3: SECURITY & PASSWORD -->
-        <div id="tabSecurity" class="dash-tab-content hidden space-y-6">
+        <div id="tabSecurity" class="dash-tab-content space-y-6 <?= ($activeTab === 'security') ? '' : 'hidden' ?>">
             <div class="max-w-2xl bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-5">
                 <div class="flex items-center gap-3 pb-4 border-b border-slate-100">
                     <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
@@ -464,12 +476,19 @@ foreach ($bookings as $b) {
 <script>
 $(document).ready(function() {
     // Tab Navigation
-    function activateTab(tabId) {
+    function activateTab(tabId, updateUrl = false) {
+        let cleanName = 'bookings';
         if (!tabId) tabId = '#tabBookings';
-        if (tabId === 'profile' || tabId === 'tabProfile') tabId = '#tabProfile';
-        if (tabId === 'security' || tabId === 'tabSecurity') tabId = '#tabSecurity';
-        if (tabId === 'bookings' || tabId === 'tabBookings') tabId = '#tabBookings';
-        if (!tabId.startsWith('#')) tabId = '#' + tabId;
+        if (tabId === 'profile' || tabId === 'tabProfile' || tabId === '#tabProfile') {
+            tabId = '#tabProfile';
+            cleanName = 'profile';
+        } else if (tabId === 'security' || tabId === 'tabSecurity' || tabId === '#tabSecurity') {
+            tabId = '#tabSecurity';
+            cleanName = 'security';
+        } else {
+            tabId = '#tabBookings';
+            cleanName = 'bookings';
+        }
 
         const btn = $('.dash-tab-btn[data-target="' + tabId + '"]');
         if (btn.length) {
@@ -482,19 +501,24 @@ $(document).ready(function() {
             $('.dash-tab-content').addClass('hidden');
             $(tabId).removeClass('hidden');
             if (typeof lucide !== 'undefined') lucide.createIcons();
+
+            if (updateUrl && window.history && window.history.replaceState) {
+                const newUrl = window.location.pathname + '?tab=' + cleanName;
+                window.history.replaceState({ tab: cleanName }, '', newUrl);
+            }
         }
     }
 
     $('.dash-tab-btn').on('click', function() {
         const target = $(this).data('target');
-        activateTab(target);
+        activateTab(target, true);
     });
 
     // Check URL query param ?tab=... or hash #... on load
     const urlParams = new URLSearchParams(window.location.search);
     const tabParam = urlParams.get('tab') || window.location.hash.replace('#', '');
     if (tabParam) {
-        activateTab(tabParam);
+        activateTab(tabParam, false);
     }
 
     // Review Modal Opening

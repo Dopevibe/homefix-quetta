@@ -5,10 +5,11 @@
 define('IS_AJAX', true);
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../includes/auth.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
-if (empty($_SESSION['user_id'])) {
+if (!is_customer_logged_in()) {
     json_response(false, 'Please sign in to submit a review.', [], 401);
 }
 
@@ -16,8 +17,8 @@ $bookingId = (int)($_POST['booking_id'] ?? 0);
 $serviceId = (int)($_POST['service_id'] ?? 0);
 $rating = (int)($_POST['rating'] ?? 5);
 $reviewText = trim($_POST['review_text'] ?? '');
-$userId = $_SESSION['user_id'];
-$customerName = $_SESSION['user_name'] ?? 'Customer';
+$userId = (int)$_SESSION['customer']['id'];
+$customerName = $_SESSION['customer']['name'] ?? 'Customer';
 
 if (!$bookingId || empty($reviewText)) {
     json_response(false, 'Please select a rating and write your review.');
