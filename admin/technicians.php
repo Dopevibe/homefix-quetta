@@ -24,80 +24,150 @@ $technicians = Database::fetchAll("SELECT * FROM technicians ORDER BY status ASC
         </button>
     </header>
 
-    <main class="flex-1 overflow-y-auto p-6 space-y-6">
+    <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6">
         
-        <div class="bg-slate-800/90 border border-slate-700/80 rounded-3xl shadow-xl overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs sm:text-sm text-slate-300">
-                    <thead class="bg-slate-950 text-slate-400 uppercase text-[10px] font-bold tracking-wider border-b border-slate-700">
-                        <tr>
-                            <th class="px-6 py-4">Technician</th>
-                            <th class="px-6 py-4">Specialty</th>
-                            <th class="px-6 py-4">Phone / Email</th>
-                            <th class="px-6 py-4">Experience</th>
-                            <th class="px-6 py-4">Rating</th>
-                            <th class="px-6 py-4">Availability</th>
-                            <th class="px-6 py-4 text-right">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-700/60 text-slate-200">
+        <!-- 1. Desktop Responsive Table View -->
+        <div class="hidden md:block bg-slate-950 border border-slate-800 rounded-3xl shadow-xl overflow-hidden">
+            <table class="w-full text-left text-xs text-slate-300">
+                <thead class="bg-slate-900/80 text-slate-400 uppercase text-[10px] font-bold tracking-wider border-b border-slate-800">
+                    <tr>
+                        <th class="px-4 py-3.5">Technician</th>
+                        <th class="px-3 py-3.5">Specialty</th>
+                        <th class="px-3 py-3.5">Phone / Email</th>
+                        <th class="px-3 py-3.5">Experience</th>
+                        <th class="px-3 py-3.5 text-center">Rating</th>
+                        <th class="px-3 py-3.5 text-center">Availability</th>
+                        <th class="px-4 py-3.5 text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800/80 text-slate-200">
+                    <?php if (!empty($technicians)): ?>
                         <?php foreach ($technicians as $t): ?>
-                            <tr class="hover:bg-slate-750 transition">
-                                <td class="px-6 py-4 font-bold flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-xl bg-teal-800 text-white flex items-center justify-center font-heading font-extrabold text-sm">
-                                        <?= strtoupper(substr($t['name'], 0, 1)) ?>
-                                    </div>
-                                    <div>
-                                        <span class="text-white block"><?= e($t['name']) ?></span>
-                                        <?= get_status_badge($t['status']) ?>
+                            <tr class="hover:bg-slate-900/60 transition">
+                                <td class="px-4 py-3.5 font-bold">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-9 h-9 rounded-xl bg-teal-900/80 text-teal-300 border border-teal-500/30 flex items-center justify-center font-heading font-extrabold text-sm shrink-0">
+                                            <?= strtoupper(substr($t['name'], 0, 1)) ?>
+                                        </div>
+                                        <div class="min-w-0">
+                                            <span class="text-white block truncate"><?= e($t['name']) ?></span>
+                                            <?= get_status_badge($t['status']) ?>
+                                        </div>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 font-semibold text-teal-300">
+                                <td class="px-3 py-3.5 font-semibold text-teal-300 whitespace-nowrap">
                                     <?= e($t['specialty']) ?>
                                 </td>
-                                <td class="px-6 py-4 text-xs font-mono">
+                                <td class="px-3 py-3.5 text-xs font-mono whitespace-nowrap">
                                     <span class="text-white block"><?= e($t['phone']) ?></span>
                                     <span class="text-slate-400 text-[11px]"><?= e($t['email'] ?? 'N/A') ?></span>
                                 </td>
-                                <td class="px-6 py-4 font-mono text-slate-300">
+                                <td class="px-3 py-3.5 font-mono text-slate-300 whitespace-nowrap">
                                     <?= $t['experience_years'] ?> Years
                                 </td>
-                                <td class="px-6 py-4">
-                                    <span class="text-amber-400 font-bold flex items-center gap-1 font-mono">
+                                <td class="px-3 py-3.5 whitespace-nowrap text-center">
+                                    <span class="text-amber-400 font-bold inline-flex items-center gap-1 font-mono text-xs">
                                         <i data-lucide="star" class="w-3.5 h-3.5 fill-current"></i>
                                         <?= number_format($t['rating'], 1) ?>
                                     </span>
                                 </td>
-                                <td class="px-6 py-4">
+                                <td class="px-3 py-3.5 whitespace-nowrap text-center">
                                     <?php if ($t['availability'] === 'available'): ?>
-                                        <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-950 text-emerald-400 border border-emerald-500/30">Available</span>
+                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-950 text-emerald-400 border border-emerald-500/30">Available</span>
                                     <?php elseif ($t['availability'] === 'busy'): ?>
-                                        <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-950 text-amber-400 border border-amber-500/30">On Job</span>
+                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-950 text-amber-400 border border-amber-500/30">On Job</span>
                                     <?php else: ?>
-                                        <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-900 text-slate-400">Offline</span>
+                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-900 text-slate-400 border border-slate-700">Offline</span>
                                     <?php endif; ?>
                                 </td>
-                                <td class="px-6 py-4 text-right space-x-1">
+                                <td class="px-4 py-3.5 text-right whitespace-nowrap space-x-1">
                                     <button type="button" 
-                                            class="edit-tech-btn p-2 rounded-lg bg-slate-700 hover:bg-teal-600 text-white inline-block"
+                                            class="edit-tech-btn p-2 rounded-xl bg-slate-800 hover:bg-teal-600 text-white transition inline-block"
                                             data-tech='<?= json_encode($t, JSON_HEX_APOS | JSON_HEX_QUOT) ?>'
-                                            title="Edit">
+                                            title="Edit Technician">
                                         <i data-lucide="edit" class="w-3.5 h-3.5"></i>
                                     </button>
                                     <button type="button" 
-                                            class="delete-item-btn p-2 rounded-lg bg-slate-700 hover:bg-rose-600 text-slate-300 hover:text-white inline-block"
+                                            class="delete-item-btn p-2 rounded-xl bg-slate-800 hover:bg-rose-600 text-slate-400 hover:text-white transition inline-block"
                                             data-action="delete_technician"
                                             data-id="<?= $t['id'] ?>"
                                             data-title="<?= e($t['name']) ?>"
-                                            title="Delete">
+                                            title="Delete Technician">
                                         <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                                     </button>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
+                    <?php else: ?>
+                        <tr><td colspan="7" class="p-8 text-center text-slate-500">No technicians registered.</td></tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 2. Mobile Responsive Card View -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 md:hidden">
+            <?php if (!empty($technicians)): ?>
+                <?php foreach ($technicians as $t): ?>
+                    <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 space-y-3 shadow-lg">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="w-11 h-11 rounded-xl bg-teal-900/80 text-teal-300 border border-teal-500/30 flex items-center justify-center font-heading font-extrabold text-sm shrink-0">
+                                    <?= strtoupper(substr($t['name'], 0, 1)) ?>
+                                </div>
+                                <div class="min-w-0">
+                                    <h3 class="text-sm font-bold text-white truncate"><?= e($t['name']) ?></h3>
+                                    <span class="text-xs font-semibold text-teal-400 block"><?= e($t['specialty']) ?></span>
+                                </div>
+                            </div>
+                            <div>
+                                <?= get_status_badge($t['status']) ?>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2 text-xs bg-slate-900/60 p-2.5 rounded-xl border border-slate-800/80">
+                            <div>
+                                <span class="text-[10px] text-slate-500 block">Phone:</span>
+                                <a href="tel:<?= e($t['phone']) ?>" class="text-slate-200 hover:text-teal-400 font-mono block truncate"><?= e($t['phone']) ?></a>
+                            </div>
+                            <div>
+                                <span class="text-[10px] text-slate-500 block">Rating / Exp:</span>
+                                <span class="text-amber-400 font-bold inline-flex items-center gap-1">
+                                    <i data-lucide="star" class="w-3 h-3 fill-current"></i> <?= number_format($t['rating'], 1) ?>
+                                    <span class="text-slate-400 font-normal ml-1">(<?= $t['experience_years'] ?>y)</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-1">
+                            <div>
+                                <?php if ($t['availability'] === 'available'): ?>
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-950 text-emerald-400 border border-emerald-500/30">● Available</span>
+                                <?php elseif ($t['availability'] === 'busy'): ?>
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-950 text-amber-400 border border-amber-500/30">● On Job</span>
+                                <?php else: ?>
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-900 text-slate-400">● Offline</span>
+                                <?php endif; ?>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <button type="button" 
+                                        class="edit-tech-btn px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-teal-600 text-slate-200 hover:text-white transition inline-flex items-center gap-1 text-xs font-semibold"
+                                        data-tech='<?= json_encode($t, JSON_HEX_APOS | JSON_HEX_QUOT) ?>'>
+                                    <i data-lucide="edit" class="w-3.5 h-3.5"></i> Edit
+                                </button>
+                                <button type="button" 
+                                        class="delete-item-btn p-1.5 rounded-xl bg-slate-800 hover:bg-rose-600 text-slate-400 hover:text-white transition inline-block"
+                                        data-action="delete_technician"
+                                        data-id="<?= $t['id'] ?>"
+                                        data-title="<?= e($t['name']) ?>"
+                                        title="Delete">
+                                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
         </div>
 
     </main>

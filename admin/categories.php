@@ -30,66 +30,116 @@ $categories = Database::fetchAll(
         </button>
     </header>
 
-    <main class="flex-1 overflow-y-auto p-6 space-y-6">
+    <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6">
         
-        <div class="bg-slate-800/90 border border-slate-700/80 rounded-3xl shadow-xl overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs sm:text-sm text-slate-300">
-                    <thead class="bg-slate-950 text-slate-400 uppercase text-[10px] font-bold tracking-wider border-b border-slate-700">
-                        <tr>
-                            <th class="px-6 py-4">Category</th>
-                            <th class="px-6 py-4">Description</th>
-                            <th class="px-6 py-4">Services Linked</th>
-                            <th class="px-6 py-4">Icon Name</th>
-                            <th class="px-6 py-4">Status</th>
-                            <th class="px-6 py-4 text-right">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-700/60 text-slate-200">
+        <!-- 1. Desktop Responsive Table View -->
+        <div class="hidden md:block bg-slate-950 border border-slate-800 rounded-3xl shadow-xl overflow-hidden">
+            <table class="w-full text-left text-xs text-slate-300">
+                <thead class="bg-slate-900/80 text-slate-400 uppercase text-[10px] font-bold tracking-wider border-b border-slate-800">
+                    <tr>
+                        <th class="px-4 py-3.5">Category</th>
+                        <th class="px-3 py-3.5">Description</th>
+                        <th class="px-3 py-3.5">Services Linked</th>
+                        <th class="px-3 py-3.5">Icon</th>
+                        <th class="px-3 py-3.5 text-center">Status</th>
+                        <th class="px-4 py-3.5 text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800/80 text-slate-200">
+                    <?php if (!empty($categories)): ?>
                         <?php foreach ($categories as $c): ?>
-                            <tr class="hover:bg-slate-750 transition">
-                                <td class="px-6 py-4 font-bold flex items-center gap-3">
-                                    <div class="w-9 h-9 rounded-xl bg-teal-900/60 text-teal-400 flex items-center justify-center border border-teal-500/30">
-                                        <i data-lucide="<?= e($c['icon'] ?? 'wrench') ?>" class="w-4 h-4"></i>
-                                    </div>
-                                    <div>
-                                        <span class="text-white block"><?= e($c['name']) ?></span>
-                                        <span class="text-[10px] text-slate-400 font-mono"><?= e($c['slug']) ?></span>
+                            <tr class="hover:bg-slate-900/60 transition">
+                                <td class="px-4 py-3.5 font-bold">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-9 h-9 rounded-xl bg-teal-900/60 text-teal-400 flex items-center justify-center border border-teal-500/30 shrink-0">
+                                            <i data-lucide="<?= e($c['icon'] ?? 'wrench') ?>" class="w-4 h-4"></i>
+                                        </div>
+                                        <div class="min-w-0">
+                                            <span class="text-white block truncate"><?= e($c['name']) ?></span>
+                                            <span class="text-[10px] text-slate-400 font-mono"><?= e($c['slug']) ?></span>
+                                        </div>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 text-xs text-slate-400 max-w-sm">
-                                    <?= e($c['description']) ?>
+                                <td class="px-3 py-3.5 text-xs text-slate-400 max-w-sm">
+                                    <p class="truncate"><?= e($c['description']) ?></p>
                                 </td>
-                                <td class="px-6 py-4 font-bold text-teal-400 font-mono">
+                                <td class="px-3 py-3.5 font-bold text-teal-400 font-mono whitespace-nowrap">
                                     <?= $c['service_count'] ?> Services
                                 </td>
-                                <td class="px-6 py-4 text-xs font-mono text-slate-400">
+                                <td class="px-3 py-3.5 text-xs font-mono text-slate-400 whitespace-nowrap">
                                     <?= e($c['icon']) ?>
                                 </td>
-                                <td class="px-6 py-4">
+                                <td class="px-3 py-3.5 whitespace-nowrap text-center">
                                     <?= get_status_badge($c['status']) ?>
                                 </td>
-                                <td class="px-6 py-4 text-right space-x-1">
+                                <td class="px-4 py-3.5 text-right whitespace-nowrap space-x-1">
                                     <button type="button" 
-                                            class="edit-category-btn p-2 rounded-lg bg-slate-700 hover:bg-teal-600 text-white inline-block"
+                                            class="edit-category-btn p-2 rounded-xl bg-slate-800 hover:bg-teal-600 text-white transition inline-block"
                                             data-cat='<?= json_encode($c, JSON_HEX_APOS | JSON_HEX_QUOT) ?>'
-                                            title="Edit">
+                                            title="Edit Category">
                                         <i data-lucide="edit" class="w-3.5 h-3.5"></i>
                                     </button>
                                     <button type="button" 
-                                            class="delete-item-btn p-2 rounded-lg bg-slate-700 hover:bg-rose-600 text-slate-300 hover:text-white inline-block"
+                                            class="delete-item-btn p-2 rounded-xl bg-slate-800 hover:bg-rose-600 text-slate-400 hover:text-white transition inline-block"
                                             data-action="delete_category"
                                             data-id="<?= $c['id'] ?>"
                                             data-title="<?= e($c['name']) ?>"
-                                            title="Delete">
+                                            title="Delete Category">
                                         <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                                     </button>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
+                    <?php else: ?>
+                        <tr><td colspan="6" class="p-8 text-center text-slate-500">No categories found.</td></tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 2. Mobile Responsive Card View -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 md:hidden">
+            <?php if (!empty($categories)): ?>
+                <?php foreach ($categories as $c): ?>
+                    <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 space-y-3 shadow-lg">
+                        <div class="flex items-start justify-between gap-2">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="w-10 h-10 rounded-xl bg-teal-900/60 text-teal-400 flex items-center justify-center border border-teal-500/30 shrink-0">
+                                    <i data-lucide="<?= e($c['icon'] ?? 'wrench') ?>" class="w-5 h-5"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <h3 class="text-sm font-bold text-white truncate"><?= e($c['name']) ?></h3>
+                                    <span class="text-xs font-mono font-bold text-teal-400"><?= $c['service_count'] ?> Services</span>
+                                </div>
+                            </div>
+                            <div>
+                                <?= get_status_badge($c['status']) ?>
+                            </div>
+                        </div>
+
+                        <p class="text-xs text-slate-400 line-clamp-2"><?= e($c['description']) ?></p>
+
+                        <div class="flex items-center justify-between pt-2 border-t border-slate-800">
+                            <span class="text-[10px] font-mono text-slate-500">slug: <?= e($c['slug']) ?></span>
+                            <div class="flex items-center gap-1.5">
+                                <button type="button" 
+                                        class="edit-category-btn px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-teal-600 text-slate-200 hover:text-white transition inline-flex items-center gap-1 text-xs font-semibold"
+                                        data-cat='<?= json_encode($c, JSON_HEX_APOS | JSON_HEX_QUOT) ?>'>
+                                    <i data-lucide="edit" class="w-3.5 h-3.5"></i> Edit
+                                </button>
+                                <button type="button" 
+                                        class="delete-item-btn p-1.5 rounded-xl bg-slate-800 hover:bg-rose-600 text-slate-400 hover:text-white transition inline-block"
+                                        data-action="delete_category"
+                                        data-id="<?= $c['id'] ?>"
+                                        data-title="<?= e($c['name']) ?>"
+                                        title="Delete">
+                                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
         </div>
 
     </main>
