@@ -6,22 +6,47 @@
 
 ### **Modern, Full-Stack On-Demand Home Maintenance & Repair Platform for Quetta, Balochistan**
 
+**Conceived, Designed & Developed by:** **Rashid Ali**  
+*Final Project for **AI Web Development** | **Balochistan Youth Empowerment (DTAN)** — Digital Balochistan by Digital Transformation Awareness Network*
+
+[![Developer](https://img.shields.io/badge/Developer-Rashid_Ali-teal?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Dopevibe)
+[![Program](https://img.shields.io/badge/Program-Digital_Balochistan_(DTAN)-blue?style=for-the-badge)](https://github.com/Dopevibe)
 [![PHP Version](https://img.shields.io/badge/PHP-8.0%2B-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://www.php.net/)
 [![MySQL Version](https://img.shields.io/badge/MySQL-8.0%2B%20%2F%20MariaDB-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![GSAP Animations](https://img.shields.io/badge/GSAP-3.12-88CE02?style=for-the-badge&logo=greensock&logoColor=white)](https://greensock.com/gsap/)
-[![Leaflet Maps](https://img.shields.io/badge/Leaflet.js-1.9-199900?style=for-the-badge&logo=leaflet&logoColor=white)](https://leafletjs.com/)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
 
-[🌐 Live Demo Website](https://homefixquetta.infinityfree.io/) • [📖 Deployment Guide](DEPLOYMENT_GUIDE.md) • [🐛 Report Bug](https://github.com/)
+[🌐 Live Demo Website](https://homefixquetta.infinityfree.io/) • [📖 Deployment Guide](DEPLOYMENT_GUIDE.md) • [👤 Developer Profile](https://github.com/Dopevibe)
 
 </div>
 
 ---
 
+## 💡 Original Idea & Vision
+
+The concept for **HomeFix Quetta** was envisioned and developed by **Rashid Ali** to address a critical real-world challenge in Quetta, Balochistan: the lack of a centralized, trustworthy, and digitally organized on-demand home maintenance service.
+
+Homeowners in Quetta often struggle with finding verified plumbers, electricians, painters, and handymen who arrive on time with transparent pricing. **HomeFix Quetta** solves this by delivering a modern, localized digital ecosystem bridging residents across all major Quetta sectors (Satellite Town, Jinnah Town, Cantt, Zarghoon Road, Airport Road, Samungli Road, etc.) with certified, background-checked trade professionals.
+
+---
+
+## 🎓 Academic & Program Attribution
+
+This application represents the **Final Capstone Project** for:
+* **Course / Track**: AI Web Development
+* **Initiative**: Balochistan Youth Empowerment Program (DTAN)
+* **Organization**: Digital Balochistan by Digital Transformation Awareness Network (DTAN)
+* **Lead Architect & Developer**: Rashid Ali
+
+---
+
 ## 📌 Executive Summary
 
-**HomeFix Quetta** is a production-ready, full-stack web application designed specifically for the unique residential and commercial maintenance landscape of **Quetta, Balochistan, Pakistan**. It bridges the gap between homeowners and verified local professionals across 4 essential trades: **Plumbing & Water Tanks**, **Electrical & Solar UPS**, **Wall Painting & Waterproofing**, and **Handyman & Wall Mounting**.
+**HomeFix Quetta** is a production-grade, full-stack web application built from the ground up to handle real customer bookings, live technician dispatches, automated notifications, interactive geolocations, and complete business operations for 4 essential trades:
+1. 🔧 **Plumbing & Water Tanks** (Pipe leaks, sanitary fittings, overhead tank cleaning, motor installation)
+2. ⚡ **Electrical & Solar UPS** (UPS inverter wiring, DB breaker fixes, solar panel wiring, lighting)
+3. 🎨 **Wall Painting & Waterproofing** (WeatherShield exterior, interior emulsion, roof seepage proofing)
+4. 🔨 **Handyman & Wall Mounting** (LED TV brackets, curtain rods, door lock fittings, appliance repair)
 
 ---
 
@@ -31,10 +56,10 @@
 - **Fluid Micro-Interactions**: Powered by GSAP & native CSS transitions for smooth page entrances, button states (`loading` → `success` → `reset`), and interactive toasts.
 - **Dynamic Services Catalog**: Real-time AJAX live search with query debouncing, category pills filtering, and instant PKR rate card calculation.
 - **Service Detail Deep-Dives**: Comprehensive service scope, "What's Included" checklist, typical durations, fixed rates, and genuine customer feedback.
-- **Multi-Step Booking Wizard**: Fast scheduling selecting service, Quetta neighborhood (Satellite Town, Jinnah Town, Cantt, Zarghoon Rd, Airport Rd, etc.), time slots, problem description, and optional photo attachment with instant live preview.
+- **Multi-Step Booking Wizard**: Fast scheduling selecting service, Quetta neighborhood, time slots, problem description, and optional photo attachment with instant live preview.
 - **Real-Time Booking Tracker**: Live visual tracker (`Pending` → `Confirmed` → `Assigned` → `In Progress` → `Completed`) with assigned technician details and direct helpline hotline.
 - **Interactive Quetta Hubs Map**: Leaflet.js and OpenStreetMap integration plotting specialized dispatch hubs across Quetta.
-- **Before & After Work Showcase**: Interactive interactive comparison slider showcasing actual repair results.
+- **Before & After Work Showcase**: Interactive comparison slider showcasing actual repair results.
 
 ### 2. 👤 Customer Account Dashboard
 - **Secure Authentication**: BCRYPT password hashing (`password_hash()`), secure sessions, and role-based access control.
@@ -49,6 +74,7 @@
 - **Technician Management**: Roster tracking verified CNIC background checks, trade specialties, ratings, and live availability toggles (`available`, `busy`, `offline`).
 - **Review Moderation Queue**: Approve, hide, or moderate incoming customer reviews.
 - **Customer Directory & Inquiries Inbox**: Customer order metrics and support contact message management.
+- **SaaS-Grade Admin Settings**: Interactive avatar upload, live image preview, password strength meter, confirmation validator, and system metadata audit panel.
 
 ---
 
@@ -67,7 +93,7 @@
 
 | Layer | Technology | Purpose |
 |---|---|---|
-| **Backend** | PHP 8.0+ | Server-side runtime, business logic, session guards |
+| **Backend Runtime** | PHP 8.0+ | Server-side runtime, business logic, session guards |
 | **Database** | MySQL 8.0+ / MariaDB | Relational storage with InnoDB engines, foreign keys & indexes |
 | **Frontend Styling** | Tailwind CSS 3.4 CDN | Responsive modern utility-first styling system |
 | **UI Components** | Lucide Icons, SweetAlert2 | Scalable vector iconography and interactive dialogs |
@@ -79,12 +105,8 @@
 
 ## 📂 Project Directory Structure
 
-```text
+```
 homefix-quetta/
-├── admin/                         # Administrative Operations Portal
-│   ├── bookings.php               # Bookings management & technician dispatch
-│   ├── categories.php             # Category CRUD & icons
-│   ├── customers.php              # Customer directory & spending records
 │   ├── dashboard.php              # Analytics KPIs & business metrics
 │   ├── gallery.php                # Before & after project showcase management
 │   ├── login.php                  # Secure admin authorization portal
@@ -206,12 +228,13 @@ Or place the folder inside `C:\xampp\htdocs\` and visit `http://localhost/homefi
 
 ## 🌐 Free Production Deployment
 
-For step-by-step instructions on deploying this repository for 100% free with free MySQL database and SSL on **InfinityFree**, **AlwaysData**, or **Render**, refer to the included [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md).
+## 👨‍💻 Project Credits & Attribution
 
----
+* **Project Concept & Original Idea**: **Rashid Ali**
+* **Lead Developer & Software Architect**: **Rashid Ali**
+* **Academic Program**: Final Project for **AI Web Development**
+* **Initiative**: **Balochistan Youth Empowerment (DTAN)**
+* **Platform**: **Digital Balochistan by Digital Transformation Awareness Network**
+* **Location**: Quetta, Balochistan, Pakistan
 
-## 📄 License & Intellectual Property
-
-This project is open-source software licensed under the **MIT License**.
-
-Developed for **HomeFix Quetta** — Dedicated to bringing reliable, professional home maintenance to Quetta, Balochistan, Pakistan.
+*Crafted with dedication by **Rashid Ali** to empower the local workforce and bring modern, reliable on-demand home maintenance to the people of Quetta, Balochistan.*
