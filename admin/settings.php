@@ -336,25 +336,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Helper Toast Dispatcher
     const showToast = (type, title, message) => {
+        const textContent = message || title;
         if (typeof Swal !== 'undefined') {
             Swal.fire({
                 toast: true,
                 position: 'top-end',
                 icon: type,
-                title: message || title,
+                html: `<div style="color:#f8fafc; font-size:13px; font-weight:600; text-align:left; padding-left:4px;">${textContent}</div>`,
                 showConfirmButton: false,
                 timer: 3000,
                 timerProgressBar: true,
-                background: '#0f172a',
-                color: '#f8fafc',
+                background: '#0B0F17',
                 customClass: {
-                    popup: 'border border-slate-700 rounded-xl text-xs'
+                    popup: 'border border-slate-700/80 rounded-xl shadow-2xl'
                 }
             });
         } else if (typeof HF !== 'undefined' && HF.toast) {
-            HF.toast(type, message || title);
+            HF.toast(type, textContent);
         } else {
-            alert(message || title);
+            alert(textContent);
         }
     };
 

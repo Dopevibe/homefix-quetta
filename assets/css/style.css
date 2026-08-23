@@ -202,7 +202,16 @@ h1, h2, h3, h4, h5, h6, .font-heading {
 .swal2-title {
   font-family: var(--font-heading) !important;
   font-weight: 700 !important;
-  color: #0F172A !important;
+  color: #0F172A;
+}
+.swal2-toast .swal2-title {
+  color: #F8FAFC !important;
+  font-size: 0.875rem !important;
+  font-weight: 600 !important;
+  line-height: 1.25rem !important;
+}
+.swal2-toast .swal2-html-container {
+  color: #94A3B8 !important;
 }
 .swal2-confirm.homefix-confirm-btn {
   background: #0D9488 !important;
