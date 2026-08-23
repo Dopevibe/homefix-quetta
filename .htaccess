@@ -1,0 +1,19 @@
+DirectoryIndex index.php index.html
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # Redirect /index.php to root /
+    RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /index\.php[?\ ] [NC]
+    RewriteRule ^index\.php$ / [R=301,L]
+
+    # Redirect /page.php to /page
+    RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /([a-zA-Z0-9_-]+)\.php[?\ ] [NC]
+    RewriteRule ^([a-zA-Z0-9_-]+)\.php$ /$1 [R=301,L]
+
+    # Internally rewrite clean extensionless URL to the .php file
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME}.php -f
+    RewriteRule ^([a-zA-Z0-9_-]+)/?$ $1.php [L,QSA]
+</IfModule>

@@ -1,0 +1,32 @@
+# Operating System Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE & Editor Configurations
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Environment & Secrets
+.env
+.env.local
+*.log
+
+# Temp & Scratch Files
+/scratch/
+*.tmp
+*.bak
+
+# Keep directory structure for uploads
+uploads/*
+!uploads/.gitkeep
+uploads/bookings/*
+!uploads/bookings/.gitkeep
+uploads/services/*
+!uploads/services/.gitkeep
+uploads/technicians/*
+!uploads/technicians/.gitkeep
+uploads/gallery/*
+!uploads/gallery/.gitkeep

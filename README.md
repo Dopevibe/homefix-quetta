@@ -1,0 +1,217 @@
+# HomeFix Quetta — On-Demand Home Services Platform
+
+<div align="center">
+
+![HomeFix Quetta Banner](assets/images/hero_homefix.jpg)
+
+### **Modern, Full-Stack On-Demand Home Maintenance & Repair Platform for Quetta, Balochistan**
+
+[![PHP Version](https://img.shields.io/badge/PHP-8.0%2B-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://www.php.net/)
+[![MySQL Version](https://img.shields.io/badge/MySQL-8.0%2B%20%2F%20MariaDB-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![GSAP Animations](https://img.shields.io/badge/GSAP-3.12-88CE02?style=for-the-badge&logo=greensock&logoColor=white)](https://greensock.com/gsap/)
+[![Leaflet Maps](https://img.shields.io/badge/Leaflet.js-1.9-199900?style=for-the-badge&logo=leaflet&logoColor=white)](https://leafletjs.com/)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
+
+[🌐 Live Demo Website](https://homefixquetta.infinityfree.io/) • [📖 Deployment Guide](DEPLOYMENT_GUIDE.md) • [🐛 Report Bug](https://github.com/)
+
+</div>
+
+---
+
+## 📌 Executive Summary
+
+**HomeFix Quetta** is a production-ready, full-stack web application designed specifically for the unique residential and commercial maintenance landscape of **Quetta, Balochistan, Pakistan**. It bridges the gap between homeowners and verified local professionals across 4 essential trades: **Plumbing & Water Tanks**, **Electrical & Solar UPS**, **Wall Painting & Waterproofing**, and **Handyman & Wall Mounting**.
+
+---
+
+## ✨ Core System Architecture & Features
+
+### 1. 🏡 Public Customer Experience
+- **Fluid Micro-Interactions**: Powered by GSAP & native CSS transitions for smooth page entrances, button states (`loading` → `success` → `reset`), and interactive toasts.
+- **Dynamic Services Catalog**: Real-time AJAX live search with query debouncing, category pills filtering, and instant PKR rate card calculation.
+- **Service Detail Deep-Dives**: Comprehensive service scope, "What's Included" checklist, typical durations, fixed rates, and genuine customer feedback.
+- **Multi-Step Booking Wizard**: Fast scheduling selecting service, Quetta neighborhood (Satellite Town, Jinnah Town, Cantt, Zarghoon Rd, Airport Rd, etc.), time slots, problem description, and optional photo attachment with instant live preview.
+- **Real-Time Booking Tracker**: Live visual tracker (`Pending` → `Confirmed` → `Assigned` → `In Progress` → `Completed`) with assigned technician details and direct helpline hotline.
+- **Interactive Quetta Hubs Map**: Leaflet.js and OpenStreetMap integration plotting specialized dispatch hubs across Quetta.
+- **Before & After Work Showcase**: Interactive interactive comparison slider showcasing actual repair results.
+
+### 2. 👤 Customer Account Dashboard
+- **Secure Authentication**: BCRYPT password hashing (`password_hash()`), secure sessions, and role-based access control.
+- **Active & Historical Bookings**: Real-time status cards, detailed service summaries, and self-service cancellation for pending bookings.
+- **Verified Review Engine**: 5-star rating submission with written testimonials on completed service orders.
+- **Profile Management**: Instant address and contact details updates with lightweight AJAX toasts.
+
+### 3. 🛡️ Administrative Operations Console (`/admin`)
+- **Real-Time Business KPI Dashboard**: Revenue analytics in PKR, active requests, unassigned dispatches, available technicians, and registered customer metrics.
+- **Bookings Pipeline & Dispatch**: Status filtering, 1-click on-duty technician assignment, lifecycle transitions, and deletion with SweetAlert2 confirmation modals.
+- **Service & Category CRUD**: Full creation, photo uploading, pricing updates, and featured status toggles.
+- **Technician Management**: Roster tracking verified CNIC background checks, trade specialties, ratings, and live availability toggles (`available`, `busy`, `offline`).
+- **Review Moderation Queue**: Approve, hide, or moderate incoming customer reviews.
+- **Customer Directory & Inquiries Inbox**: Customer order metrics and support contact message management.
+
+---
+
+## 🔒 Security & Performance Engineering
+
+1. **100% Prepared PDO Statements**: All SQL queries utilize parameterized statements with `PDO::ATTR_EMULATE_PREPARES => false`, eliminating SQL Injection attack vectors.
+2. **Robust Password Security**: Passwords hashed using industry-standard BCRYPT algorithms (`PASSWORD_BCRYPT`) and verified using constant-time string comparison (`password_verify()`).
+3. **Safe Exception & Error Handling**: AJAX controllers and database layers log technical errors privately with `error_log()` while returning clean, user-friendly responses.
+4. **XSS & Output Sanitization**: Strict HTML entity encoding via helper `e()` (`htmlspecialchars()`).
+5. **Secure Multi-MIME Upload Validation**: Validates image binary MIME headers using PHP `finfo` (`image/jpeg`, `image/png`, `image/webp`), enforces 5MB size limits, and generates randomized alphanumeric filenames (`uniqid()`).
+6. **Clean URL Engine & Apache Hardening**: Extensionless routing eliminating ugly `.php` extensions while blocking direct web access to `.sql`, `.env`, and configuration directories.
+
+---
+
+## 🛠️ Technology Stack
+
+| Layer | Technology | Purpose |
+|---|---|---|
+| **Backend** | PHP 8.0+ | Server-side runtime, business logic, session guards |
+| **Database** | MySQL 8.0+ / MariaDB | Relational storage with InnoDB engines, foreign keys & indexes |
+| **Frontend Styling** | Tailwind CSS 3.4 CDN | Responsive modern utility-first styling system |
+| **UI Components** | Lucide Icons, SweetAlert2 | Scalable vector iconography and interactive dialogs |
+| **Animation Engine** | GSAP 3.12, ScrollTrigger | Hardware-accelerated motion and scroll-based triggers |
+| **Maps & Geo** | Leaflet.js 1.9, OpenStreetMap | Interactive Quetta service hub geolocation map |
+| **HTTP / AJAX** | Vanilla JS ES6+ & jQuery 3.7 | Asynchronous non-blocking API interactions |
+
+---
+
+## 📂 Project Directory Structure
+
+```text
+homefix-quetta/
+├── admin/                         # Administrative Operations Portal
+│   ├── bookings.php               # Bookings management & technician dispatch
+│   ├── categories.php             # Category CRUD & icons
+│   ├── customers.php              # Customer directory & spending records
+│   ├── dashboard.php              # Analytics KPIs & business metrics
+│   ├── gallery.php                # Before & after project showcase management
+│   ├── login.php                  # Secure admin authorization portal
+│   ├── logout.php                 # Admin session termination
+│   ├── messages.php               # Support contact inquiries inbox
+│   ├── reviews.php                # Customer review moderation queue
+│   ├── services.php               # Service catalog management & pricing CRUD
+│   └── technicians.php            # Technician roster & availability toggles
+│
+├── ajax/                          # RESTful JSON Endpoint Controllers
+│   ├── admin.php                  # Administrative CRUD operations & assignments
+│   ├── auth.php                   # Authentication, registration & profile updates
+│   ├── bookings.php               # Booking creation, cancellations & tracking lookup
+│   ├── contact.php                # Contact message dispatch
+│   ├── reviews.php                # Customer review submission
+│   └── services.php               # Dynamic live catalog search & filtering
+│
+├── assets/                        # Frontend Static Assets
+│   ├── css/
+│   │   └── style.css              # Custom motion tokens, glassmorphism & components
+│   ├── js/
+│   │   ├── main.js                # Core HF interaction engine & animation controller
+│   │   ├── booking.js             # Booking validation & image preview handler
+│   │   ├── services.js            # Live search debouncing & filter state
+│   │   └── admin.js               # Admin AJAX handlers & SweetAlert2 confirmations
+│   └── images/                    # Service covers, avatars, hero photography
+│
+├── config/                        # Core Application Configuration Layer
+│   ├── config.php                 # Global constants, Quetta areas, security helpers
+│   └── database.php               # Singleton PDO connection layer with cloud env support
+│
+├── database/                      # Relational Schema & Seeding
+│   └── homefix_quetta.sql         # Clean SQL schema with verified Quetta seed data
+│
+├── includes/                      # Reusable Layout Components & Middleware
+│   ├── admin_auth.php             # Admin RBAC authentication guard
+│   ├── admin_footer.php           # Admin footer & shared modal scripts
+│   ├── admin_header.php           # Admin HTML head & stylesheet includes
+│   ├── admin_sidebar.php          # Admin navigation sidebar with live counters
+│   ├── auth.php                   # Customer authentication guard
+│   ├── footer.php                 # Global footer & 4-card feature highlights
+│   ├── header.php                 # Master HTML head, SEO meta tags & CDNs
+│   └── navbar.php                 # Sticky glassmorphism header & emergency hotline
+│
+├── uploads/                       # Secure User & Admin File Uploads
+│   ├── bookings/                  # Customer problem image attachments
+│   ├── gallery/                   # Before & after project photos
+│   ├── services/                  # Service thumbnail graphics
+│   └── technicians/               # Technician profile avatars
+│
+├── .htaccess                      # Production Apache configuration & clean URLs
+├── .gitignore                     # Git tracking exclusions
+├── 404.php                        # Branded 404 Page Not Found
+├── 500.php                        # Branded 500 Server Error Page
+├── about.php                      # About HomeFix Quetta, mission & metrics
+├── booking.php                    # Multi-step booking form page
+├── contact.php                    # Office location, hotline & contact form
+├── dashboard.php                  # Customer portal dashboard
+├── DEPLOYMENT_GUIDE.md            # Free cloud hosting deployment walkthrough
+├── index.php                      # Homepage landing page
+├── login.php                      # Customer sign-in page
+├── logout.php                     # Customer sign-out handler
+├── register.php                   # Customer registration with password strength meter
+├── service-details.php            # Single service detail breakdown
+├── services.php                   # Full service catalog directory & filter
+├── test.php                       # Live server diagnostics script
+├── tracking.php                   # Real-time booking status tracker
+└── README.md                      # Comprehensive project documentation
+```
+
+---
+
+## ⚡ Quickstart & Local Installation Guide
+
+### Prerequisites
+- PHP 8.0 or higher
+- MySQL 8.0+ or MariaDB 10.4+
+- Web server (Apache, Nginx, or PHP built-in server)
+- XAMPP / WampServer (Optional, for all-in-one local setup)
+
+### 1. Clone or Copy the Repository
+```bash
+git clone https://github.com/your-username/homefix-quetta.git
+cd homefix-quetta
+```
+
+### 2. Import the Database Schema
+1. Open **phpMyAdmin** (`http://localhost/phpmyadmin`) or your MySQL client.
+2. Create a database named `homefix_quetta` with collation `utf8mb4_unicode_ci`.
+3. Import the file `database/homefix_quetta.sql`.
+
+### 3. Configure Database Credentials (Optional)
+If your local MySQL uses a custom password or port, adjust `config/database.php` or set environment variables:
+```php
+self::$host = '127.0.0.1';
+self::$db   = 'homefix_quetta';
+self::$user = 'root';
+self::$pass = '';
+self::$port = 3306;
+```
+
+### 4. Run the Development Server
+Using PHP's built-in web server:
+```bash
+php -S 127.0.0.1:8088
+```
+Or place the folder inside `C:\xampp\htdocs\` and visit `http://localhost/homefix-quetta/`.
+
+---
+
+## 🔑 Administrative & Demo Access
+
+| Role | Email | Password | Access Path |
+|---|---|---|---|
+| **Administrator** | `admin@homefix.pk` | `Admin@123` | `/admin/login.php` |
+| **Customer Account** | `customer@homefix.pk` | `Customer@123` | `/login` |
+
+---
+
+## 🌐 Free Production Deployment
+
+For step-by-step instructions on deploying this repository for 100% free with free MySQL database and SSL on **InfinityFree**, **AlwaysData**, or **Render**, refer to the included [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md).
+
+---
+
+## 📄 License & Intellectual Property
+
+This project is open-source software licensed under the **MIT License**.
+
+Developed for **HomeFix Quetta** — Dedicated to bringing reliable, professional home maintenance to Quetta, Balochistan, Pakistan.
