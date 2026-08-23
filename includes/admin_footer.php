@@ -41,7 +41,39 @@ $allTechnicians = Database::fetchAll("SELECT * FROM technicians WHERE status = '
 </div>
 
 <!-- Admin Scripts -->
-<script src="<?= asset('assets/js/admin.js') ?>"></script>
+<script>
+  window.openAdminSidebar = function() {
+    var sidebar = document.getElementById('adminSidebar');
+    var backdrop = document.getElementById('adminSidebarBackdrop');
+    if (sidebar) sidebar.classList.remove('-translate-x-full');
+    if (backdrop) backdrop.classList.remove('hidden');
+    document.body.classList.add('overflow-hidden');
+  };
+
+  window.closeAdminSidebar = function() {
+    var sidebar = document.getElementById('adminSidebar');
+    var backdrop = document.getElementById('adminSidebarBackdrop');
+    if (sidebar) sidebar.classList.add('-translate-x-full');
+    if (backdrop) backdrop.classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
+  };
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var toggleBtn = document.getElementById('adminSidebarToggle');
+    if (toggleBtn) {
+      toggleBtn.onclick = function(e) {
+        e.stopPropagation();
+        var sidebar = document.getElementById('adminSidebar');
+        if (sidebar && sidebar.classList.contains('-translate-x-full')) {
+          window.openAdminSidebar();
+        } else {
+          window.closeAdminSidebar();
+        }
+      };
+    }
+  });
+</script>
+<script src="<?= asset('assets/js/admin.js') ?>?v=<?= time() ?>"></script>
 <script>
   if (typeof lucide !== 'undefined') {
     lucide.createIcons();

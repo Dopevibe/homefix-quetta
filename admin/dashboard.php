@@ -45,18 +45,18 @@ $areaStats = Database::fetchAll(
 <div class="flex-1 flex flex-col min-w-0 overflow-hidden bg-slate-900">
     
     <!-- Top Bar -->
-    <header class="h-16 bg-slate-950 border-b border-slate-800 flex items-center justify-between px-6 shrink-0">
-        <div class="flex items-center gap-4">
-            <button id="adminSidebarToggle" class="lg:hidden p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800">
+    <header class="min-h-[4rem] h-auto sm:h-16 py-2.5 sm:py-0 bg-slate-950 border-b border-slate-800 flex items-center justify-between px-4 sm:px-6 shrink-0 z-20 gap-3">
+        <div class="flex items-center gap-3 min-w-0">
+            <button id="adminSidebarToggle" class="lg:hidden p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 shrink-0" aria-label="Toggle sidebar">
                 <i data-lucide="menu" class="w-5 h-5"></i>
             </button>
-            <h2 class="text-lg font-bold font-heading text-white">Operations Overview</h2>
+            <h2 class="text-base sm:text-lg font-extrabold font-heading text-white tracking-tight truncate">Operations Overview</h2>
         </div>
 
-        <div class="flex items-center gap-4">
-            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-950/80 text-emerald-400 border border-emerald-500/30">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>Quetta Gateway Live</span>
+        <div class="flex items-center gap-2 shrink-0">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-950/80 text-emerald-400 border border-emerald-500/30 whitespace-nowrap">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>Live Portal</span>
             </span>
         </div>
     </header>

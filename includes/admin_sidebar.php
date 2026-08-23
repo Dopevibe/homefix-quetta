@@ -5,24 +5,29 @@
 $currentAdminScript = basename($_SERVER['SCRIPT_NAME'] ?? '');
 ?>
 <!-- Sidebar Backdrop Overlay (Mobile) -->
-<div id="adminSidebarBackdrop" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-30 hidden transition-opacity duration-300"></div>
+<div id="adminSidebarBackdrop" onclick="closeAdminSidebar()" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-40 hidden transition-opacity duration-300"></div>
 
 <!-- Sidebar -->
-<aside id="adminSidebar" class="w-64 bg-slate-950 border-r border-slate-800 flex flex-col justify-between shrink-0 transition-transform duration-300 z-40 fixed lg:static inset-y-0 left-0 -translate-x-full lg:translate-x-0 shadow-2xl lg:shadow-none">
+<aside id="adminSidebar" class="w-64 bg-slate-950 border-r border-slate-800 flex flex-col justify-between shrink-0 transition-transform duration-300 z-50 fixed lg:static inset-y-0 left-0 -translate-x-full lg:translate-x-0 shadow-2xl lg:shadow-none">
     
     <!-- Top Brand & Navigation -->
     <div class="p-6 space-y-6 overflow-y-auto">
         
-        <!-- Logo -->
-        <a href="<?= base_url('admin/dashboard.php') ?>" class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-teal-600 flex items-center justify-center text-white shadow-md shadow-teal-600/30">
-                <i data-lucide="shield-check" class="w-5 h-5"></i>
-            </div>
-            <div>
-                <span class="text-xl font-extrabold font-heading text-white">Home<span class="text-teal-400">Fix</span></span>
-                <span class="text-[10px] block font-bold text-teal-400 tracking-wider uppercase">Admin Console</span>
-            </div>
-        </a>
+        <!-- Logo & Mobile Close Button -->
+        <div class="flex items-center justify-between">
+            <a href="<?= base_url('admin/dashboard.php') ?>" class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-teal-600 flex items-center justify-center text-white shadow-md shadow-teal-600/30 shrink-0">
+                    <i data-lucide="shield-check" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <span class="text-xl font-extrabold font-heading text-white">Home<span class="text-teal-400">Fix</span></span>
+                    <span class="text-[10px] block font-bold text-teal-400 tracking-wider uppercase">Admin Console</span>
+                </div>
+            </a>
+            <button type="button" onclick="closeAdminSidebar()" class="lg:hidden p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition" aria-label="Close sidebar">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
 
         <!-- Navigation Links -->
         <nav class="space-y-1 text-sm">
