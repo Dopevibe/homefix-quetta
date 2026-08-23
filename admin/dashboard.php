@@ -118,8 +118,8 @@ $areaStats = Database::fetchAll(
         </div>
 
         <!-- Recent Bookings Table & Quick Dispatch -->
-        <div class="bg-slate-800/90 border border-slate-700/80 rounded-3xl shadow-xl overflow-hidden">
-            <div class="px-6 py-5 border-b border-slate-700 flex justify-between items-center">
+        <div class="bg-slate-950 border border-slate-800 rounded-3xl shadow-xl overflow-hidden">
+            <div class="px-6 py-5 border-b border-slate-800 flex justify-between items-center bg-slate-950">
                 <div class="flex items-center gap-2">
                     <h3 class="font-heading font-bold text-base text-white">Recent Service Requests</h3>
                     <span class="text-xs px-2.5 py-0.5 rounded-full bg-teal-950 text-teal-400 border border-teal-500/30">Live Queue</span>
@@ -129,9 +129,10 @@ $areaStats = Database::fetchAll(
                 </a>
             </div>
 
-            <div class="overflow-x-auto">
+            <!-- Desktop View -->
+            <div class="hidden md:block overflow-x-auto">
                 <table class="w-full text-left text-xs sm:text-sm text-slate-300">
-                    <thead class="bg-slate-950 text-slate-400 uppercase text-[10px] font-bold tracking-wider border-b border-slate-700">
+                    <thead class="bg-slate-900/80 text-slate-400 uppercase text-[10px] font-bold tracking-wider border-b border-slate-800">
                         <tr>
                             <th class="px-6 py-3.5">Ref / Date</th>
                             <th class="px-6 py-3.5">Customer & Area</th>
@@ -142,9 +143,9 @@ $areaStats = Database::fetchAll(
                             <th class="px-6 py-3.5 text-right">Actions</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-700/60 text-slate-200">
+                    <tbody class="divide-y divide-slate-800/80 text-slate-200">
                         <?php foreach ($recentBookings as $b): ?>
-                            <tr class="hover:bg-slate-750 transition">
+                            <tr class="hover:bg-slate-900/60 transition">
                                 <td class="px-6 py-3.5 font-medium">
                                     <span class="font-mono font-bold text-teal-400 block"><?= e($b['booking_reference']) ?></span>
                                     <span class="text-[11px] text-slate-400"><?= format_date($b['preferred_date']) ?> • <?= e($b['preferred_time']) ?></span>
@@ -185,10 +186,10 @@ $areaStats = Database::fetchAll(
                                     </select>
                                 </td>
                                 <td class="px-6 py-3.5 text-right space-x-1">
-                                    <a href="<?= base_url('tracking.php?ref=' . $b['booking_reference']) ?>" target="_blank" class="p-1.5 rounded-lg bg-slate-700 hover:bg-teal-600 text-white inline-block" title="Live Customer View">
+                                    <a href="<?= base_url('tracking.php?ref=' . $b['booking_reference']) ?>" target="_blank" class="p-1.5 rounded-lg bg-slate-800 hover:bg-teal-600 text-white inline-block" title="Live Customer View">
                                         <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
                                     </a>
-                                    <button type="button" class="delete-item-btn p-1.5 rounded-lg bg-slate-700 hover:bg-rose-600 text-slate-300 hover:text-white inline-block" 
+                                    <button type="button" class="delete-item-btn p-1.5 rounded-lg bg-slate-800 hover:bg-rose-600 text-slate-300 hover:text-white inline-block" 
                                             data-action="delete_booking" 
                                             data-id="<?= $b['id'] ?>" 
                                             data-title="Booking <?= $b['booking_reference'] ?>" 
@@ -200,6 +201,49 @@ $areaStats = Database::fetchAll(
                         <?php endforeach; ?>
                     </tbody>
                 </table>
+            </div>
+
+            <!-- Mobile Cards View (Visible on screens < 768px, zero horizontal scrolling) -->
+            <div class="divide-y divide-slate-850 md:hidden">
+                <?php foreach ($recentBookings as $b): ?>
+                    <div class="p-4 space-y-3 bg-slate-950">
+                        <div class="flex items-start justify-between gap-2">
+                            <div>
+                                <span class="font-mono font-bold text-teal-400 text-xs block"><?= e($b['booking_reference']) ?></span>
+                                <h4 class="text-sm font-bold text-white leading-snug"><?= e($b['service_name']) ?></h4>
+                            </div>
+                            <span class="text-sm font-mono font-bold text-teal-400"><?= format_price($b['total_amount']) ?></span>
+                        </div>
+
+                        <div class="text-xs text-slate-400 space-y-1 bg-slate-900/60 p-2.5 rounded-xl border border-slate-850">
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">Customer:</span>
+                                <span class="font-bold text-slate-200"><?= e($b['customer_name']) ?> (<?= e($b['area']) ?>)</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">Date & Time:</span>
+                                <span><?= format_date($b['preferred_date']) ?> • <?= e($b['preferred_time']) ?></span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between gap-2 pt-1">
+                            <select class="booking-status-select flex-1 bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-1.5 text-xs text-slate-200"
+                                    data-id="<?= $b['id'] ?>"
+                                    data-current="<?= $b['status'] ?>">
+                                <option value="pending" <?= ($b['status'] === 'pending') ? 'selected' : '' ?>>Pending</option>
+                                <option value="confirmed" <?= ($b['status'] === 'confirmed') ? 'selected' : '' ?>>Confirmed</option>
+                                <option value="assigned" <?= ($b['status'] === 'assigned') ? 'selected' : '' ?>>Assigned</option>
+                                <option value="in_progress" <?= ($b['status'] === 'in_progress') ? 'selected' : '' ?>>In Progress</option>
+                                <option value="completed" <?= ($b['status'] === 'completed') ? 'selected' : '' ?>>Completed</option>
+                                <option value="cancelled" <?= ($b['status'] === 'cancelled') ? 'selected' : '' ?>>Cancelled</option>
+                            </select>
+
+                            <a href="<?= base_url('tracking.php?ref=' . $b['booking_reference']) ?>" target="_blank" class="p-2 rounded-xl bg-slate-800 text-teal-400" title="Tracking">
+                                <i data-lucide="external-link" class="w-4 h-4"></i>
+                            </a>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
             </div>
         </div>
 
