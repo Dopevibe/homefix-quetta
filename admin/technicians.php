@@ -73,28 +73,32 @@ $technicians = Database::fetchAll("SELECT * FROM technicians ORDER BY status ASC
                         <!-- Top Header: Avatar + Name + Specialty + Availability -->
                         <div class="space-y-3">
                             <div class="flex items-start justify-between gap-3">
-                                <div class="flex items-center gap-3.5 min-w-0">
-                                    <div class="w-12 h-12 rounded-2xl bg-teal-950 border border-teal-500/40 text-teal-300 flex items-center justify-center font-heading font-extrabold text-base shrink-0 shadow-md">
+                                <div class="flex items-center gap-3 min-w-0 flex-1">
+                                    <div class="relative w-12 h-12 rounded-2xl bg-teal-950 border border-teal-500/40 text-teal-300 flex items-center justify-center font-heading font-extrabold text-base shrink-0 shadow-md">
                                         <?= strtoupper(substr($t['name'], 0, 1)) ?>
+                                        <span class="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full ring-2 ring-slate-950 <?= ($t['availability'] === 'available') ? 'bg-emerald-500' : (($t['availability'] === 'busy') ? 'bg-amber-500' : 'bg-slate-500') ?>"></span>
                                     </div>
-                                    <div class="min-w-0">
-                                        <h3 class="text-base font-extrabold font-heading text-white truncate leading-snug"><?= e($t['name']) ?></h3>
+                                    <div class="min-w-0 flex-1">
+                                        <h3 class="text-sm sm:text-base font-extrabold font-heading text-white truncate leading-snug" title="<?= e($t['name']) ?>"><?= e($t['name']) ?></h3>
                                         <span class="text-xs font-semibold text-teal-400 block truncate mt-0.5"><?= e($t['specialty']) ?></span>
                                     </div>
                                 </div>
                                 
-                                <div>
+                                <div class="shrink-0">
                                     <?php if ($t['availability'] === 'available'): ?>
-                                        <span class="px-2.5 py-1 rounded-xl text-[10px] font-bold uppercase bg-emerald-950/90 text-emerald-400 border border-emerald-500/30 shadow-sm">
-                                            ● Available
+                                        <span class="whitespace-nowrap px-3 py-1 rounded-full text-[11px] font-bold bg-emerald-950/90 text-emerald-300 border border-emerald-500/40 shadow-sm inline-flex items-center gap-1.5">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                                            <span>Available</span>
                                         </span>
                                     <?php elseif ($t['availability'] === 'busy'): ?>
-                                        <span class="px-2.5 py-1 rounded-xl text-[10px] font-bold uppercase bg-amber-950/90 text-amber-400 border border-amber-500/30 shadow-sm">
-                                            ● On Job
+                                        <span class="whitespace-nowrap px-3 py-1 rounded-full text-[11px] font-bold bg-amber-950/90 text-amber-300 border border-amber-500/40 shadow-sm inline-flex items-center gap-1.5">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                                            <span>On Job</span>
                                         </span>
                                     <?php else: ?>
-                                        <span class="px-2.5 py-1 rounded-xl text-[10px] font-bold uppercase bg-slate-900 text-slate-400 border border-slate-750">
-                                            ● Offline
+                                        <span class="whitespace-nowrap px-3 py-1 rounded-full text-[11px] font-semibold bg-slate-900 text-slate-400 border border-slate-750 inline-flex items-center gap-1.5">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span>
+                                            <span>Offline</span>
                                         </span>
                                     <?php endif; ?>
                                 </div>

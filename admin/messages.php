@@ -109,23 +109,31 @@ $totalAllCount = (int)(Database::fetch("SELECT COUNT(*) as cnt FROM contact_mess
                         </div>
 
                         <!-- Right: Metadata & Actions -->
-                        <div class="flex items-center justify-between md:justify-end gap-3 w-full md:w-auto shrink-0 border-t md:border-t-0 pt-2 md:pt-0 border-slate-800/80">
+                        <div class="flex items-center gap-4 shrink-0 w-full md:w-auto justify-between md:justify-end border-t md:border-t-0 pt-2.5 md:pt-0 border-slate-900">
                             
-                            <div class="text-left md:text-right">
-                                <span class="text-xs text-slate-400 block whitespace-nowrap"><?= format_date($m['created_at']) ?></span>
-                                <div id="status-col-<?= $m['id'] ?>" class="mt-0.5">
+                            <!-- Date & Status -->
+                            <div class="flex md:flex-col items-center md:items-end gap-2 md:gap-1 text-xs">
+                                <span class="text-xs font-mono text-slate-400 whitespace-nowrap"><?= format_date($m['created_at']) ?></span>
+                                <div id="status-col-<?= $m['id'] ?>">
                                     <?php if ($m['is_read'] == 1): ?>
-                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-800 text-slate-400 border border-slate-700">Read</span>
+                                        <span class="whitespace-nowrap px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-850 text-slate-400 border border-slate-700/80">Read</span>
                                     <?php else: ?>
-                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">● Unread</span>
+                                        <span class="whitespace-nowrap px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 inline-flex items-center gap-1">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+                                            <span>Unread</span>
+                                        </span>
                                     <?php endif; ?>
                                 </div>
                             </div>
 
+                            <!-- Divider on Desktop -->
+                            <div class="hidden md:block w-px h-8 bg-slate-800"></div>
+
+                            <!-- Actions -->
                             <div class="flex items-center gap-1.5" onclick="event.stopPropagation();">
                                 <!-- View Trigger -->
                                 <button type="button" 
-                                        class="view-msg-btn px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-teal-600 text-slate-200 hover:text-white transition inline-flex items-center gap-1 text-xs font-semibold"
+                                        class="view-msg-btn px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-teal-600 text-slate-200 hover:text-white transition inline-flex items-center gap-1.5 text-xs font-bold shadow-sm"
                                         data-id="<?= $m['id'] ?>"
                                         data-name="<?= e($m['name']) ?>"
                                         data-email="<?= e($m['email']) ?>"
@@ -141,7 +149,7 @@ $totalAllCount = (int)(Database::fetch("SELECT COUNT(*) as cnt FROM contact_mess
 
                                 <!-- Delete Trigger -->
                                 <button type="button" 
-                                        class="delete-item-btn p-2 rounded-xl bg-slate-800 hover:bg-rose-600 text-slate-400 hover:text-white transition inline-block"
+                                        class="delete-item-btn p-2 rounded-xl bg-slate-800 hover:bg-rose-600 text-slate-400 hover:text-white transition inline-flex items-center justify-center shadow-sm"
                                         data-action="delete_message"
                                         data-id="<?= $m['id'] ?>"
                                         data-title="Message from <?= e($m['name']) ?>"
@@ -273,7 +281,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 const statusCol = document.getElementById('status-col-' + id);
                 if (statusCol) {
-                    statusCol.innerHTML = '<span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-800 text-slate-400 border border-slate-700">Read</span>';
+                    statusCol.innerHTML = '<span class="whitespace-nowrap px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-850 text-slate-400 border border-slate-700/80">Read</span>';
                 }
 
                 try {
