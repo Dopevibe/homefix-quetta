@@ -86,19 +86,28 @@ if (!$adminAvatarUrl && file_exists(ROOT_PATH . '/assets/images/avatars/admin.jp
                 <!-- Column 1: Profile & Personal Info (7 cols on desktop) -->
                 <div class="lg:col-span-7 bg-slate-950 border border-slate-800 rounded-2xl p-5 sm:p-7 shadow-lg shadow-black/20 space-y-6">
                     
-                    <!-- Profile Header / Overview Box -->
+                    <!-- Profile Header / Overview Box with Interactive Avatar Upload -->
                     <div class="flex items-center gap-4 pb-5 border-b border-slate-800/80">
                         <div class="relative shrink-0">
-                            <?php if ($adminAvatarUrl): ?>
-                                <img src="<?= $adminAvatarUrl ?>" alt="<?= e($adminName) ?>" class="w-14 h-14 rounded-2xl object-cover ring-2 ring-teal-500/30 shadow-md shadow-black/40" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-teal-700 via-teal-600 to-teal-500 text-white font-extrabold font-heading text-xl items-center justify-center shadow-md shadow-teal-900/30 ring-2 ring-teal-500/20" style="display:none;">
-                                    <?= e($adminInitial) ?>
+                            <label for="avatarFileInput" class="group relative cursor-pointer block rounded-2xl overflow-hidden ring-2 ring-teal-500/30 hover:ring-teal-400 transition shadow-md shadow-black/40" title="Click to upload a new profile photo">
+                                <?php if ($adminAvatarUrl): ?>
+                                    <img id="avatarPreviewImg" src="<?= $adminAvatarUrl ?>" alt="<?= e($adminName) ?>" class="w-16 h-16 rounded-2xl object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                    <div id="avatarFallbackBadge" class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-teal-700 via-teal-600 to-teal-500 text-white font-extrabold font-heading text-xl items-center justify-center shadow-md shadow-teal-900/30" style="display:none;">
+                                        <?= e($adminInitial) ?>
+                                    </div>
+                                <?php else: ?>
+                                    <img id="avatarPreviewImg" src="" alt="<?= e($adminName) ?>" class="w-16 h-16 rounded-2xl object-cover hidden">
+                                    <div id="avatarFallbackBadge" class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-teal-700 via-teal-600 to-teal-500 text-white font-extrabold font-heading text-xl flex items-center justify-center shadow-md shadow-teal-900/30">
+                                        <?= e($adminInitial) ?>
+                                    </div>
+                                <?php endif; ?>
+                                
+                                <!-- Hover Overlay -->
+                                <div class="absolute inset-0 bg-slate-950/75 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col items-center justify-center text-white text-[10px] font-bold">
+                                    <i data-lucide="camera" class="w-4 h-4 mb-0.5 text-teal-400"></i>
+                                    <span>Change</span>
                                 </div>
-                            <?php else: ?>
-                                <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-teal-700 via-teal-600 to-teal-500 text-white font-extrabold font-heading text-xl flex items-center justify-center shadow-md shadow-teal-900/30 ring-2 ring-teal-500/20">
-                                    <?= e($adminInitial) ?>
-                                </div>
-                            <?php endif; ?>
+                            </label>
                             <span class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-slate-950 flex items-center justify-center" title="Account Active"></span>
                         </div>
 
@@ -110,14 +119,20 @@ if (!$adminAvatarUrl && file_exists(ROOT_PATH . '/assets/images/avatars/admin.jp
                                 </span>
                             </div>
                             <p class="text-xs text-slate-400 truncate mt-0.5"><?= e($adminEmail) ?></p>
-                            <span class="inline-flex items-center gap-1 text-[11px] text-emerald-400 font-medium mt-1">
-                                <i data-lucide="shield-check" class="w-3 h-3"></i> Verified Administrator Account
-                            </span>
+                            <div class="flex items-center gap-3 mt-1.5 flex-wrap">
+                                <label for="avatarFileInput" class="text-[11px] text-teal-400 hover:text-teal-300 font-semibold cursor-pointer inline-flex items-center gap-1 transition">
+                                    <i data-lucide="upload-cloud" class="w-3 h-3"></i> Upload New Photo
+                                </label>
+                                <span class="text-slate-600 text-xs">•</span>
+                                <span class="text-[11px] text-slate-500">JPG, PNG, WEBP (Max 5MB)</span>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Editable Profile Form -->
-                    <form id="adminProfileForm" class="space-y-4">
+                    <form id="adminProfileForm" class="space-y-4" enctype="multipart/form-data">
+                        <!-- Hidden Avatar File Input -->
+                        <input type="file" id="avatarFileInput" name="avatar" accept="image/jpeg,image/png,image/webp" class="hidden">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <!-- Full Name -->
                             <div>
@@ -429,6 +444,37 @@ document.addEventListener('DOMContentLoaded', () => {
         newPassInput.addEventListener('input', checkMatch);
     }
 
+    // Avatar File Selection & Live Preview
+    const avatarInput = document.getElementById('avatarFileInput');
+    const avatarPreviewImg = document.getElementById('avatarPreviewImg');
+    const avatarFallbackBadge = document.getElementById('avatarFallbackBadge');
+
+    if (avatarInput) {
+        avatarInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                if (file.size > 5 * 1024 * 1024) {
+                    showToast('warning', 'File Too Large', 'Avatar image must be less than 5MB.');
+                    this.value = '';
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    if (avatarPreviewImg) {
+                        avatarPreviewImg.src = e.target.result;
+                        avatarPreviewImg.style.display = 'block';
+                        avatarPreviewImg.classList.remove('hidden');
+                    }
+                    if (avatarFallbackBadge) {
+                        avatarFallbackBadge.style.display = 'none';
+                    }
+                    showToast('info', 'Photo Selected', 'Click "Save Changes" to apply your new profile photo.');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
     // Profile Form Submission
     const profileForm = document.getElementById('adminProfileForm');
     const resetProfileBtn = document.getElementById('resetProfileBtn');
@@ -464,6 +510,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     const updatedName = document.getElementById('adminNameInput').value;
                     const nameDisplay = document.getElementById('profileNameDisplay');
                     if (nameDisplay) nameDisplay.textContent = updatedName;
+
+                    if (res.data && res.data.avatar_url) {
+                        if (avatarPreviewImg) avatarPreviewImg.src = res.data.avatar_url;
+                        const sidebarImg = document.querySelector('#adminSidebar img');
+                        if (sidebarImg) sidebarImg.src = res.data.avatar_url;
+                    }
                 } else {
                     showToast('error', 'Error', res.message || 'Failed to update profile.');
                 }

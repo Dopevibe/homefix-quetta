@@ -120,15 +120,36 @@ switch ($action) {
             json_response(false, 'Name and phone are required.');
         }
 
-        Database::execute(
-            "UPDATE users SET name = ?, phone = ?, area = ?, address = ? WHERE id = ?",
-            [$name, $phone, $area, $address, $userId]
-        );
+        $avatarPath = null;
+        if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
+            $upload = handle_file_upload($_FILES['avatar'], 'avatars');
+            if (!$upload['success']) {
+                json_response(false, $upload['error']);
+            }
+            $avatarPath = str_replace('uploads/', '', $upload['path']);
+        }
+
+        if ($avatarPath) {
+            Database::execute(
+                "UPDATE users SET name = ?, phone = ?, area = ?, address = ?, avatar = ? WHERE id = ?",
+                [$name, $phone, $area, $address, $avatarPath, $userId]
+            );
+            $_SESSION['user_avatar'] = $avatarPath;
+        } else {
+            Database::execute(
+                "UPDATE users SET name = ?, phone = ?, area = ?, address = ? WHERE id = ?",
+                [$name, $phone, $area, $address, $userId]
+            );
+        }
 
         $_SESSION['user_name'] = $name;
         $_SESSION['user_phone'] = $phone;
 
-        json_response(true, 'Profile updated successfully.');
+        $newAvatarUrl = $avatarPath ? asset('uploads/' . $avatarPath) : null;
+
+        json_response(true, 'Profile updated successfully.', [
+            'avatar_url' => $newAvatarUrl
+        ]);
         break;
 
     case 'change_password':
