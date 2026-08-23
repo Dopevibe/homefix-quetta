@@ -21,6 +21,19 @@ $adminStatus = ucfirst($adminData['status'] ?? 'active');
 $adminCreated = !empty($adminData['created_at']) ? format_date($adminData['created_at'], 'M d, Y') : 'Active Member';
 $adminUpdated = !empty($adminData['updated_at']) ? format_date($adminData['updated_at'], 'M d, Y \a\t h:i A') : 'Recently';
 $adminInitial = strtoupper(substr($adminName, 0, 1));
+
+// Resolve admin avatar image URL
+$adminAvatarUrl = null;
+if (!empty($adminData['avatar'])) {
+    if (file_exists(ROOT_PATH . '/uploads/' . $adminData['avatar'])) {
+        $adminAvatarUrl = asset('uploads/' . $adminData['avatar']);
+    } elseif (file_exists(ROOT_PATH . '/' . $adminData['avatar'])) {
+        $adminAvatarUrl = asset($adminData['avatar']);
+    }
+}
+if (!$adminAvatarUrl && file_exists(ROOT_PATH . '/assets/images/avatars/admin.jpg')) {
+    $adminAvatarUrl = asset('assets/images/avatars/admin.jpg');
+}
 ?>
 
 <!-- Main Content Wrapper -->
@@ -76,8 +89,11 @@ $adminInitial = strtoupper(substr($adminName, 0, 1));
                     <!-- Profile Header / Overview Box -->
                     <div class="flex items-center gap-4 pb-5 border-b border-slate-800/80">
                         <div class="relative shrink-0">
-                            <?php if (!empty($adminData['avatar'])): ?>
-                                <img src="<?= asset('uploads/' . e($adminData['avatar'])) ?>" alt="Admin Avatar" class="w-14 h-14 rounded-2xl object-cover ring-2 ring-teal-500/30">
+                            <?php if ($adminAvatarUrl): ?>
+                                <img src="<?= $adminAvatarUrl ?>" alt="<?= e($adminName) ?>" class="w-14 h-14 rounded-2xl object-cover ring-2 ring-teal-500/30 shadow-md shadow-black/40" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-teal-700 via-teal-600 to-teal-500 text-white font-extrabold font-heading text-xl items-center justify-center shadow-md shadow-teal-900/30 ring-2 ring-teal-500/20" style="display:none;">
+                                    <?= e($adminInitial) ?>
+                                </div>
                             <?php else: ?>
                                 <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-teal-700 via-teal-600 to-teal-500 text-white font-extrabold font-heading text-xl flex items-center justify-center shadow-md shadow-teal-900/30 ring-2 ring-teal-500/20">
                                     <?= e($adminInitial) ?>

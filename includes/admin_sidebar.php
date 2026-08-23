@@ -99,9 +99,10 @@ $currentAdminScript = basename($_SERVER['SCRIPT_NAME'] ?? '');
         </a>
 
         <div class="flex items-center justify-between pt-2 border-t border-slate-800 px-1">
-            <div class="flex items-center gap-2">
-                <div class="w-7 h-7 rounded-lg bg-slate-800 text-teal-400 font-bold flex items-center justify-center text-xs">
-                    A
+            <div class="flex items-center gap-2.5">
+                <img src="<?= asset('assets/images/avatars/admin.jpg') ?>" alt="Admin" class="w-8 h-8 rounded-lg object-cover ring-1 ring-teal-500/30 shadow" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="w-8 h-8 rounded-lg bg-slate-800 text-teal-400 font-bold items-center justify-center text-xs" style="display:none;">
+                    <?= strtoupper(substr($adminUser['name'] ?? 'A', 0, 1)) ?>
                 </div>
                 <div class="truncate max-w-[120px]">
                     <span class="text-xs font-bold text-slate-200 block truncate"><?= e($adminUser['name'] ?? 'Administrator') ?></span>
