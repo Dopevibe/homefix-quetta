@@ -95,15 +95,18 @@ $currentScript = basename($_SERVER['SCRIPT_NAME'] ?? '');
                                     <i data-lucide="shield-check" class="w-4 h-4"></i> Admin Panel
                                 </a>
                             <?php else: ?>
-                                <a href="<?= base_url('dashboard.php') ?>" class="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50">
-                                    <i data-lucide="layout-dashboard" class="w-4 h-4 text-slate-400"></i> Customer Dashboard
+                                <a href="<?= base_url('dashboard.php?tab=bookings') ?>" class="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 font-medium">
+                                    <i data-lucide="layout-dashboard" class="w-4 h-4 text-teal-600"></i> Customer Dashboard
                                 </a>
-                                <a href="<?= base_url('dashboard.php#bookings') ?>" class="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50">
-                                    <i data-lucide="calendar-check" class="w-4 h-4 text-slate-400"></i> My Bookings
+                                <a href="<?= base_url('dashboard.php?tab=profile') ?>" class="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 font-medium">
+                                    <i data-lucide="user" class="w-4 h-4 text-slate-400"></i> Personal Information
+                                </a>
+                                <a href="<?= base_url('dashboard.php?tab=security') ?>" class="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 font-medium">
+                                    <i data-lucide="lock" class="w-4 h-4 text-slate-400"></i> Security & Password
                                 </a>
                             <?php endif; ?>
                             <div class="border-t border-slate-100 mt-1"></div>
-                            <a href="<?= base_url('logout.php') ?>" class="flex items-center gap-2 px-4 py-2.5 text-sm text-rose-600 hover:bg-rose-50">
+                            <a href="<?= base_url('logout.php') ?>" class="flex items-center gap-2 px-4 py-2.5 text-sm text-rose-600 hover:bg-rose-50 font-medium">
                                 <i data-lucide="log-out" class="w-4 h-4"></i> Logout
                             </a>
                         </div>

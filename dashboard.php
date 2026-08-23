@@ -464,18 +464,38 @@ foreach ($bookings as $b) {
 <script>
 $(document).ready(function() {
     // Tab Navigation
+    function activateTab(tabId) {
+        if (!tabId) tabId = '#tabBookings';
+        if (tabId === 'profile' || tabId === 'tabProfile') tabId = '#tabProfile';
+        if (tabId === 'security' || tabId === 'tabSecurity') tabId = '#tabSecurity';
+        if (tabId === 'bookings' || tabId === 'tabBookings') tabId = '#tabBookings';
+        if (!tabId.startsWith('#')) tabId = '#' + tabId;
+
+        const btn = $('.dash-tab-btn[data-target="' + tabId + '"]');
+        if (btn.length) {
+            $('.dash-tab-btn').removeClass('active bg-teal-600 text-white shadow-md shadow-teal-600/20')
+                              .addClass('bg-white text-slate-600 hover:bg-slate-100 border border-slate-200');
+            
+            btn.addClass('active bg-teal-600 text-white shadow-md shadow-teal-600/20')
+               .removeClass('bg-white text-slate-600 hover:bg-slate-100 border border-slate-200');
+            
+            $('.dash-tab-content').addClass('hidden');
+            $(tabId).removeClass('hidden');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+    }
+
     $('.dash-tab-btn').on('click', function() {
         const target = $(this).data('target');
-        $('.dash-tab-btn').removeClass('active bg-teal-600 text-white shadow-md shadow-teal-600/20')
-                          .addClass('bg-white text-slate-600 hover:bg-slate-100 border border-slate-200');
-        
-        $(this).addClass('active bg-teal-600 text-white shadow-md shadow-teal-600/20')
-               .removeClass('bg-white text-slate-600 hover:bg-slate-100 border border-slate-200');
-        
-        $('.dash-tab-content').addClass('hidden');
-        $(target).removeClass('hidden');
-        if (typeof lucide !== 'undefined') lucide.createIcons();
+        activateTab(target);
     });
+
+    // Check URL query param ?tab=... or hash #... on load
+    const urlParams = new URLSearchParams(window.location.search);
+    const tabParam = urlParams.get('tab') || window.location.hash.replace('#', '');
+    if (tabParam) {
+        activateTab(tabParam);
+    }
 
     // Review Modal Opening
     $(document).on('click', '.leave-review-btn', function() {
