@@ -453,6 +453,13 @@ document.addEventListener('DOMContentLoaded', () => {
         avatarInput.addEventListener('change', function() {
             const file = this.files[0];
             if (file) {
+                const allowedExts = ['jpg', 'jpeg', 'png', 'webp'];
+                const ext = file.name.split('.').pop().toLowerCase();
+                if (!allowedExts.includes(ext)) {
+                    showToast('error', 'Invalid Format', 'Only JPG, PNG, and WEBP image formats are supported.');
+                    this.value = '';
+                    return;
+                }
                 if (file.size > 5 * 1024 * 1024) {
                     showToast('warning', 'File Too Large', 'Avatar image must be less than 5MB.');
                     this.value = '';
