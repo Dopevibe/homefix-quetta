@@ -42,36 +42,31 @@ $allTechnicians = Database::fetchAll("SELECT * FROM technicians WHERE status = '
 
 <!-- Admin Scripts -->
 <script>
-  window.openAdminSidebar = function() {
+  window.toggleAdminSidebar = function(e) {
+    if (e) {
+      if (typeof e.stopPropagation === 'function') e.stopPropagation();
+      if (typeof e.preventDefault === 'function') e.preventDefault();
+    }
     var sidebar = document.getElementById('adminSidebar');
     var backdrop = document.getElementById('adminSidebarBackdrop');
-    if (sidebar) sidebar.classList.remove('-translate-x-full');
-    if (backdrop) backdrop.classList.remove('hidden');
-    document.body.classList.add('overflow-hidden');
+    if (!sidebar) return;
+    
+    if (sidebar.classList.contains('-translate-x-full')) {
+      sidebar.classList.remove('-translate-x-full');
+      if (backdrop) backdrop.classList.remove('hidden');
+    } else {
+      sidebar.classList.add('-translate-x-full');
+      if (backdrop) backdrop.classList.add('hidden');
+    }
   };
 
-  window.closeAdminSidebar = function() {
+  window.closeAdminSidebar = function(e) {
+    if (e && typeof e.stopPropagation === 'function') e.stopPropagation();
     var sidebar = document.getElementById('adminSidebar');
     var backdrop = document.getElementById('adminSidebarBackdrop');
     if (sidebar) sidebar.classList.add('-translate-x-full');
     if (backdrop) backdrop.classList.add('hidden');
-    document.body.classList.remove('overflow-hidden');
   };
-
-  document.addEventListener('DOMContentLoaded', function() {
-    var toggleBtn = document.getElementById('adminSidebarToggle');
-    if (toggleBtn) {
-      toggleBtn.onclick = function(e) {
-        e.stopPropagation();
-        var sidebar = document.getElementById('adminSidebar');
-        if (sidebar && sidebar.classList.contains('-translate-x-full')) {
-          window.openAdminSidebar();
-        } else {
-          window.closeAdminSidebar();
-        }
-      };
-    }
-  });
 </script>
 <script src="<?= asset('assets/js/admin.js') ?>?v=<?= time() ?>"></script>
 <script>

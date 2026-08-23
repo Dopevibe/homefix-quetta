@@ -18,15 +18,15 @@ $customers = Database::fetchAll(
 
 <div class="flex-1 flex flex-col min-w-0 overflow-hidden bg-slate-900">
     
-    <header class="h-16 bg-slate-950 border-b border-slate-800 flex items-center justify-between px-6 shrink-0">
-        <div class="flex items-center gap-4">
-            <button id="adminSidebarToggle" class="lg:hidden p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800">
+    <header class="min-h-[4rem] h-auto sm:h-16 py-2.5 sm:py-0 bg-slate-950 border-b border-slate-800 flex items-center justify-between px-4 sm:px-6 shrink-0 z-20 gap-3">
+        <div class="flex items-center gap-3 min-w-0">
+            <button type="button" id="adminSidebarToggle" onclick="toggleAdminSidebar(event)" class="lg:hidden p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 shrink-0 transition" aria-label="Toggle sidebar">
                 <i data-lucide="menu" class="w-5 h-5"></i>
             </button>
-            <h2 class="text-lg font-bold font-heading text-white">Registered Customer Profiles</h2>
+            <h2 class="text-base sm:text-lg font-extrabold font-heading text-white tracking-tight truncate">Customer Accounts</h2>
         </div>
-        <span class="text-xs font-mono font-bold text-teal-400 bg-teal-950 px-3 py-1 rounded-full border border-teal-500/30">
-            <?= count($customers) ?> Customers Registered
+        <span class="text-xs font-mono font-bold text-teal-400 bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-800 shrink-0 whitespace-nowrap">
+            <?= count($customers) ?> Accounts
         </span>
     </header>
 

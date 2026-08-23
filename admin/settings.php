@@ -42,7 +42,7 @@ if (!$adminAvatarUrl && file_exists(ROOT_PATH . '/assets/images/avatars/admin.jp
     <!-- Top Navigation Header -->
     <header class="min-h-[4rem] h-auto sm:h-16 py-2.5 sm:py-0 bg-slate-950 border-b border-slate-800 flex items-center justify-between px-4 sm:px-6 shrink-0 z-20 gap-3">
         <div class="flex items-center gap-3 min-w-0">
-            <button id="adminSidebarToggle" class="lg:hidden p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 shrink-0 transition" aria-label="Toggle sidebar">
+            <button type="button" id="adminSidebarToggle" onclick="toggleAdminSidebar(event)" class="lg:hidden p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 shrink-0 transition" aria-label="Toggle sidebar">
                 <i data-lucide="menu" class="w-5 h-5"></i>
             </button>
             <div class="min-w-0">

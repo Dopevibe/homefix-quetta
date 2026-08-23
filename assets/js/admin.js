@@ -4,45 +4,10 @@
  */
 
 $(document).ready(function () {
-  // Mobile Sidebar Controller with Backdrop & Outside Tap
-  function openAdminSidebar() {
-    $('#adminSidebar').removeClass('-translate-x-full');
-    $('#adminSidebarBackdrop').removeClass('hidden');
-    $('body').addClass('overflow-hidden lg:overflow-auto');
-  }
-
-  function closeAdminSidebar() {
-    $('#adminSidebar').addClass('-translate-x-full');
-    $('#adminSidebarBackdrop').addClass('hidden');
-    $('body').removeClass('overflow-hidden lg:overflow-auto');
-  }
-
-  $('#adminSidebarToggle').on('click', function (e) {
-    e.stopPropagation();
-    if ($('#adminSidebar').hasClass('-translate-x-full')) {
-      openAdminSidebar();
-    } else {
-      closeAdminSidebar();
-    }
-  });
-
-  $('#adminSidebarBackdrop').on('click', function () {
-    closeAdminSidebar();
-  });
-
-  // Close sidebar when clicking outside on mobile
-  $(document).on('click', function (e) {
-    if ($(window).width() < 1024) {
-      if (!$(e.target).closest('#adminSidebar').length && !$(e.target).closest('#adminSidebarToggle').length) {
-        closeAdminSidebar();
-      }
-    }
-  });
-
   // Close on Escape key
   $(document).on('keydown', function (e) {
-    if (e.key === 'Escape') {
-      closeAdminSidebar();
+    if (e.key === 'Escape' && typeof window.closeAdminSidebar === 'function') {
+      window.closeAdminSidebar();
     }
   });
 
