@@ -83,6 +83,11 @@ $currentAdminScript = basename($_SERVER['SCRIPT_NAME'] ?? '');
                 <?php endif; ?>
             </a>
 
+            <a href="<?= base_url('admin/settings.php') ?>" class="admin-nav-item <?= ($currentAdminScript === 'settings.php') ? 'active' : '' ?>">
+                <i data-lucide="settings" class="w-4 h-4"></i>
+                <span>Settings</span>
+            </a>
+
         </nav>
     </div>
 
