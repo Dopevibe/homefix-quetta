@@ -200,10 +200,15 @@ Object.assign(window.HF, {
   }
 });
 
-document.addEventListener('DOMContentLoaded', () => {
+// Initialize icons immediately if lucide is available
+if (typeof lucide !== 'undefined') {
+  try { lucide.createIcons(); } catch(e) {}
+}
+
+function initMainApp() {
   // Initialize Lucide Icons
   if (typeof lucide !== 'undefined') {
-    lucide.createIcons();
+    try { lucide.createIcons(); } catch(e) {}
   }
 
   // Improved Navbar Scroll
@@ -509,6 +514,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initialize Leaflet Map for Quetta coverage
   initQuettaMap();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initMainApp);
+} else {
+  initMainApp();
+}
+
+window.addEventListener('load', () => {
+  if (typeof lucide !== 'undefined') {
+    try { lucide.createIcons(); } catch(e) {}
+  }
 });
 
 /**

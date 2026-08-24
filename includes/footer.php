@@ -151,5 +151,10 @@
 
 <!-- Scripts -->
 <script src="<?= asset('assets/js/main.js') ?>"></script>
+<script>
+  if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+  }
+</script>
 </body>
 </html>

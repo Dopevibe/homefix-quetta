@@ -74,8 +74,13 @@ $currentUser = current_customer();
       }
     </script>
 
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Lucide Icons (jsDelivr high-speed CDN with unpkg fallback) -->
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.344.0/dist/umd/lucide.min.js"></script>
+    <script>
+      if (typeof lucide === 'undefined') {
+        document.write('<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"><\/script>');
+      }
+    </script>
 
     <!-- SweetAlert2 CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
