@@ -16,7 +16,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![GSAP Animations](https://img.shields.io/badge/GSAP-3.12-88CE02?style=for-the-badge&logo=greensock&logoColor=white)](https://greensock.com/gsap/)
 
-[🌐 Live Demo Website](https://homefixquetta.infinityfreeapp.com/) • [🗄️ Database Script](database/homefix_quetta.sql) • [👤 Developer Profile](https://github.com/Dopevibe)
+[🌐 Live Demo Website](https://homefixquetta.infinityfreeapp.com/) • [📄 Project Report (PDF)](https://github.com/Dopevibe/homefix-quetta/blob/main/HomeFix_Quetta_Project_Report.pdf) • [🗄️ Database Script](database/homefix_quetta.sql) • [👤 Developer Profile](https://github.com/Dopevibe)
 
 </div>
 
@@ -30,7 +30,7 @@
 | 💻 **GitHub Repository** | Clean, well-commented source code repository | [https://github.com/Dopevibe/homefix-quetta](https://github.com/Dopevibe/homefix-quetta) |
 | 🗄️ **Database Script** | Complete working `.sql` dump file with schema & seed data | [`database/homefix_quetta.sql`](database/homefix_quetta.sql) |
 | 🎥 **Demo Video** | 3–5 minute video walkthrough demonstrating core features | Provided in project submission portal |
-| 📄 **Project Report** | 3-page document covering business problem, architecture & AI tools | Provided in project submission portal |
+| 📄 **Project Report (PDF)** | 3-page comprehensive report covering problem, architecture & AI tools | [📄 View Report Online](https://github.com/Dopevibe/homefix-quetta/blob/main/HomeFix_Quetta_Project_Report.pdf) • [📥 Direct PDF Download](https://raw.githubusercontent.com/Dopevibe/homefix-quetta/main/HomeFix_Quetta_Project_Report.pdf) |
 
 ---
 
