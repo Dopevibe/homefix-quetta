@@ -16,7 +16,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![GSAP Animations](https://img.shields.io/badge/GSAP-3.12-88CE02?style=for-the-badge&logo=greensock&logoColor=white)](https://greensock.com/gsap/)
 
-[🌐 Live Demo Website](https://homefixquetta.infinityfree.io/) • [🗄️ Database Script](database/homefix_quetta.sql) • [👤 Developer Profile](https://github.com/Dopevibe)
+[🌐 Live Demo Website](https://homefixquetta.infinityfreeapp.com/) • [🗄️ Database Script](database/homefix_quetta.sql) • [👤 Developer Profile](https://github.com/Dopevibe)
 
 </div>
 
@@ -26,7 +26,7 @@
 
 | Deliverable | Description | Link / Location |
 | :--- | :--- | :--- |
-| 🌐 **Live Website Link** | Deployed, publicly accessible web application on live server | [https://homefixquetta.infinityfree.io/](https://homefixquetta.infinityfree.io/) |
+| 🌐 **Live Website Link** | Deployed, publicly accessible web application on live server | [https://homefixquetta.infinityfreeapp.com/](https://homefixquetta.infinityfreeapp.com/) |
 | 💻 **GitHub Repository** | Clean, well-commented source code repository | [https://github.com/Dopevibe/homefix-quetta](https://github.com/Dopevibe/homefix-quetta) |
 | 🗄️ **Database Script** | Complete working `.sql` dump file with schema & seed data | [`database/homefix_quetta.sql`](database/homefix_quetta.sql) |
 | 🎥 **Demo Video** | 3–5 minute video walkthrough demonstrating core features | Provided in project submission portal |
