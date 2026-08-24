@@ -30,7 +30,7 @@
 | 💻 **GitHub Repository** | Clean, well-commented source code repository | [https://github.com/Dopevibe/homefix-quetta](https://github.com/Dopevibe/homefix-quetta) |
 | 🗄️ **Database Script** | Complete working `.sql` dump file with schema & seed data | [`database/homefix_quetta.sql`](database/homefix_quetta.sql) |
 | 🎥 **Demo Video** | 3–5 minute video walkthrough demonstrating core features | Provided in project submission portal |
-| 📄 **Project Report (PDF)** | 3-page comprehensive report covering problem, architecture & AI tools | [🌐 Open on Live Website](https://homefixquetta.infinityfreeapp.com/HomeFix_Quetta_Project_Report.pdf) • [📄 View on GitHub](https://github.com/Dopevibe/homefix-quetta/blob/main/HomeFix_Quetta_Project_Report.pdf) • [📥 Direct Download](https://raw.githubusercontent.com/Dopevibe/homefix-quetta/main/HomeFix_Quetta_Project_Report.pdf) |
+| 📄 **Project Report** | 3-page comprehensive document covering problem, architecture & AI tools | [📄 HomeFix_Quetta_Project_Report.pdf](https://homefixquetta.infinityfreeapp.com/HomeFix_Quetta_Project_Report.pdf) |
 
 ---
 
